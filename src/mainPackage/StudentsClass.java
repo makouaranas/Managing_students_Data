@@ -8,10 +8,12 @@ public class StudentsClass {
 	
 
 	public StudentsClass(String firstName,String lastName,Date date,String email) {
+		
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
 		this.date = date;
+		
 	}
 
 

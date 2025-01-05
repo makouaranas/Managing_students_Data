@@ -1,101 +1,59 @@
 package mainPackage;
 
-import java.sql.*;
+import java.util.ArrayList;
 
-public class ManagedStudentsDatabase {
-	private String JdbkDriver ="com.mysql.cj.jdbc.Driver";
-	private String dbName = "here_where_i_will_test";
-	private String tableName = "test1";
-	private String myquery = "your query here";
-	private String url = "jdbc:mysql://localhost:3306/"+dbName;
-	private String username ="root";
-	private String password ="";
-	Connection con =null;
-	Statement stm =null;
+public class ManagedStudentsDatabase implements DataBase{
+
 	public ManagedStudentsDatabase() {
-		
-		try {
-			
-			Class.forName(JdbkDriver);
-			con = DriverManager.getConnection(url,username,password);
-			
-			stm = con.createStatement();
-			stm.executeUpdate(myquery);
-			System.out.println("done");
-		} catch(ClassNotFoundException e) {	
-			System.out.println("There is a problem maybe class not found");
-		}catch(SQLException e) {
-			e.printStackTrace();
-			System.out.println("There is a problem whith your daba conncetion");			
-		}
+		// TODO Auto-generated constructor stub
 	}
-	public void addStudent(StudentsClass student) {
-		
+
+	@Override
+	public void ajouterEtudiant(StudentsClass etudiant) {
+		// TODO Auto-generated method stub
 		
 	}
-	public void modifyStudent(StudentsClass student) {
-		
-		
-	}
-	public void removeStudent(StudentsClass student) {
-		
+
+	@Override
+	public void modifierEtudiant(String codeMassar, StudentsClass nouvelleInfo) {
+		// TODO Auto-generated method stub
 		
 	}
-	public void displayAllStudents() {
-		
+
+	@Override
+	public void supprimerEtudiant(String codeMassar) {
+		// TODO Auto-generated method stub
 		
 	}
-	public StudentsClass searchForStudent(StudentsClass student) {
-		
-		
+
+	@Override
+	public ArrayList<StudentsClass> afficherEtudiants() {
+		// TODO Auto-generated method stub
 		return null;
-		
 	}
-	public String getJdbkDriver() {
-		return JdbkDriver;
+
+	@Override
+	public StudentsClass rechercherEtudiantParNom(String nom) {
+		// TODO Auto-generated method stub
+		return null;
 	}
-	public void setJdbkDriver(String jdbkDriver) {
-		JdbkDriver = jdbkDriver;
+
+	@Override
+	public StudentsClass rechercherEtudiantParPrenom(String prenom) {
+		// TODO Auto-generated method stub
+		return null;
 	}
-	public String getDbName() {
-		return dbName;
+
+	@Override
+	public StudentsClass rechercherEtudiantParEmail(String email) {
+		// TODO Auto-generated method stub
+		return null;
 	}
-	public void setDbName(String dbName) {
-		this.dbName = dbName;
+
+	@Override
+	public boolean isStudentExist(String codeMassar) {
+		// TODO Auto-generated method stub
+		return false;
 	}
-	public String getMyquery() {
-		return myquery;
-	}
-	public void setMyquery(String myquery) {
-		this.myquery = myquery;
-	}
-	public String getUrl() {
-		return url;
-	}
-	public void setUrl(String url) {
-		this.url = url;
-	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getTableName() {
-		return tableName;
-	}
-	public void setTableName(String tablename) {
-		tableName = tablename;
-	}
-	
-	
-	
+
 }
-
-

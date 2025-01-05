@@ -1,14 +1,15 @@
 package mainPackage;
 
 public class StudentsClass {
+	private String cne;
 	private String firstName;
 	private String lastName;
 	private String email;
 	private Date date;
 	
 
-	public StudentsClass(String firstName,String lastName,Date date,String email) {
-		
+	public StudentsClass(String cne,String firstName,String lastName,Date date,String email) {
+		this.cne = cne;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;
@@ -44,6 +45,16 @@ public class StudentsClass {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+
+	public String getCne() {
+		return cne;
+	}
+
+
+	public void setCne(String cne) {
+		this.cne = cne;
 	}
 
 

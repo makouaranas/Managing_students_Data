@@ -41,6 +41,20 @@ public class Date {
 		this.annee = annee;
 	}
 	
+	// parsing Dates
+	/***
+	 * This method takes date as a String in the format {@code dd/mm/yyyy}
+	 * and return an object of type Date.
+	 * @param rawDate date as a String must be in this format {@code dd/mm/yyyy}.
+	 * @return an object of type Date.
+	 */
+	public Date parseDate(String rawDate) {
+		String[] parts = rawDate.split("/");
+		this.jour = Integer.parseInt(parts[0]);
+		this.mois = Integer.parseInt(parts[1]);;
+		this.annee = Integer.parseInt(parts[2]);;
+		return new Date(this.jour,this.mois,this.annee);
+	}
 	
 	// Override toString
 	@Override

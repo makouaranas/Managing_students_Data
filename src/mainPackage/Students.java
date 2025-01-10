@@ -1,6 +1,6 @@
 package mainPackage;
 
-public class Students {
+public class Students  {
 	private String cne;
 	private String firstName;
 	private String lastName;

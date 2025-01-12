@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class StudentsDatabase  implements DataBase {
 	// les atributes
@@ -41,16 +41,16 @@ public class StudentsDatabase  implements DataBase {
 	
 	@Override
 	public void ajouterEtudiant(Students etudiant) {
-		String addQuery = "insert into students (CodeMassar,Nom,prenom,`Date de naissance`,`E-mail`) values(?,?,?,?,?)";
+		String addQuery = "insert into students (`Code Massar`,Nom,prenom,`Date de naissance`,`E-mail`) values(?,?,?,?,?)";
 		
-		if(isStudentExist(etudiant.getCne())) {
+		if(!isStudentExist(etudiant.getCne())) {
 			try {
 				PreparedStatement statement = myConnection.prepareStatement(addQuery);
 				statement.setString(1, etudiant.getCne());
-				statement.setString(2, etudiant.getFirstName());
-				statement.setString(3, etudiant.getLastName());
-				statement.setString(5, etudiant.getDate().toString());
-				statement.setString(6, etudiant.getEmail());
+				statement.setString(3, etudiant.getFirstName());
+				statement.setString(2, etudiant.getLastName());
+				statement.setString(4, etudiant.getDate().toString());
+				statement.setString(5, etudiant.getEmail());
 				statement.executeUpdate();
 			} catch (SQLException e) {
 	
@@ -101,7 +101,7 @@ public class StudentsDatabase  implements DataBase {
 				Students student = new Students("", "", "", null, "");
 				Date dateNaissance = new Date();
 				student.setCne(result.getString("Code Massar"));
-				student.setFirstName(result.getString("	Prenom"));
+				student.setFirstName(result.getString("Prenom"));
 				student.setLastName(result.getString("Nom"));
 				student.setEmail(result.getString("E-mail"));
 				student.setDate(dateNaissance.parseDate(result.getString("Date de naissance")));
@@ -133,19 +133,18 @@ public class StudentsDatabase  implements DataBase {
 		return null;
 	}
 	
-	public ArrayList<Students> rechercherEtudiant(String choix,String info) throws SQLException {
+	public ArrayList<Students> rechercherEtudiant(int choix,String info) throws SQLException {
 		ArrayList<Students> student = new ArrayList<Students>();
-		
-		switch (choix.toLowerCase()) {
-		case "prenom":
-			PreparedStatement statement0 = myConnection.prepareStatement("select count(*) from students where prenom like ?;");
+		Students searchedStudent = new Students("", "", "", null, "");
+		Date dateNaissance = new Date();
+		switch (choix) {
+		case 0:
+			PreparedStatement statement0 = myConnection.prepareStatement("select * from students where prenom like ?;");
+			statement0.setString(1, info);
 			ResultSet resultset = statement0.executeQuery();
-			statement0.setString(1, info.toLowerCase());
 			while(resultset.next()) {
-				Students searchedStudent = new Students("", "", "", null, "");
-				Date dateNaissance = new Date();
 				searchedStudent.setCne(resultset.getString("Code Massar"));
-				searchedStudent.setFirstName(resultset.getString("	Prenom"));
+				searchedStudent.setFirstName(resultset.getString("Prenom"));
 				searchedStudent.setLastName(resultset.getString("Nom"));
 				searchedStudent.setEmail(resultset.getString("E-mail"));
 				searchedStudent.setDate(dateNaissance.parseDate(resultset.getString("Date de naissance")));
@@ -153,37 +152,29 @@ public class StudentsDatabase  implements DataBase {
 			}
 			  resultset.close();
 	          statement0.close();
-			
-			
-			break;
-
-		case "nom":
-			PreparedStatement statement1 = myConnection.prepareStatement("select count(*) from students where nom like ?;");
-			statement1.setString(1, info.toLowerCase());
+	          return student;
+		case 1:
+			PreparedStatement statement1 = myConnection.prepareStatement("select * from students where nom like ?;");
+			statement1.setString(1, info);
 			ResultSet resultset1 = statement1.executeQuery();
 			while(resultset1.next()) {
-				Students searchedStudent = new Students("", "", "", null, "");
-				Date dateNaissance = new Date();
 				searchedStudent.setCne(resultset1.getString("Code Massar"));
-				searchedStudent.setFirstName(resultset1.getString("	Prenom"));
+				searchedStudent.setFirstName(resultset1.getString("Prenom"));
 				searchedStudent.setLastName(resultset1.getString("Nom"));
 				searchedStudent.setEmail(resultset1.getString("E-mail"));
 				searchedStudent.setDate(dateNaissance.parseDate(resultset1.getString("Date de naissance")));
 				student.add(searchedStudent);
 			}
 			  resultset1.close();
-	          statement0.close();
-			break;
-			
-		case "email":
-			PreparedStatement statement2 = myConnection.prepareStatement("select count(*) from students where nom like ?;");
-			statement2.setString(1, info.toLowerCase());
+	          statement1.close();
+	          return student;
+		case 2:
+			PreparedStatement statement2 = myConnection.prepareStatement("select * from students where `Code Massar` like ?;");
+			statement2.setString(1, info);
 			ResultSet resultset2 = statement2.executeQuery();
 			while(resultset2.next()) {
-				Students searchedStudent = new Students("", "", "", null, "");
-				Date dateNaissance = new Date();
 				searchedStudent.setCne(resultset2.getString("Code Massar"));
-				searchedStudent.setFirstName(resultset2.getString("	Prenom"));
+				searchedStudent.setFirstName(resultset2.getString("Prenom"));
 				searchedStudent.setLastName(resultset2.getString("Nom"));
 				searchedStudent.setEmail(resultset2.getString("E-mail"));
 				searchedStudent.setDate(dateNaissance.parseDate(resultset2.getString("Date de naissance")));
@@ -191,9 +182,22 @@ public class StudentsDatabase  implements DataBase {
 			}
 			  resultset2.close();
 	          statement2.close();
-			
-			break;
-			
+	          return student;
+		case 3:
+			PreparedStatement statement3 = myConnection.prepareStatement("select * from students where `E-mail` like ?;");
+			statement3.setString(1, info.toLowerCase());
+			ResultSet resultset3 = statement3.executeQuery();
+			while(resultset3.next()) {
+				searchedStudent.setCne(resultset3.getString("Code Massar"));
+				searchedStudent.setFirstName(resultset3.getString("Prenom"));
+				searchedStudent.setLastName(resultset3.getString("Nom"));
+				searchedStudent.setEmail(resultset3.getString("E-mail"));
+				searchedStudent.setDate(dateNaissance.parseDate(resultset3.getString("Date de naissance")));
+				student.add(searchedStudent);
+			}
+			  resultset3.close();
+	          statement3.close();
+	          return student;
 		default:
 			System.out.println("Error");
 			break;

@@ -51,15 +51,15 @@ public class Date {
 	public Date parseDate(String rawDate) {
 		String[] parts = rawDate.split("/");
 		this.jour = Integer.parseInt(parts[0]);
-		this.mois = Integer.parseInt(parts[1]);;
-		this.annee = Integer.parseInt(parts[2]);;
+		this.mois = Integer.parseInt(parts[1]);
+		this.annee = Integer.parseInt(parts[2]);
 		return new Date(this.jour,this.mois,this.annee);
 	}
 	
 	// Override toString
 	@Override
 	public String toString() {
-		return this.jour+"/"+this.mois+"/"+this.annee+".";
+		return this.jour+"/"+this.mois+"/"+this.annee;
 	}
 	
 	

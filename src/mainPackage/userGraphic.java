@@ -19,6 +19,6 @@ public interface userGraphic {
 	/***
 	 * 
 	 */
-	public void getModifierEtudiant();
+	public void getModifierEtudiant(Students student);
 
 }

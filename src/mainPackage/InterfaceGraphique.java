@@ -248,12 +248,24 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 		StudentsDatabase studentdb = new StudentsDatabase();
 		JTextField codeMassarField, prenomField, nomField, dateNaissanceField, emailField;
 	    JButton submitButton;
-	    
-
+	    JButton backButton;
+	    JLabel vide;
+	    backButton = new JButton("← Back");
+	    backButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				getAccueil();
+				
+			}
+		});
 	  
 	       	        // Create a panel with GridBagLayout
-	    JPanel panel = new JPanel(new GridLayout(6, 2, 5, 10)); // 6 rows, 2 columns, 10px horizontal and vertical gaps
-
+	    JPanel panel = new JPanel(new GridLayout(8, 2, 10, 10)); // 6 rows, 2 columns, 10px horizontal and vertical gaps	
+	      panel.add(backButton);
+	      
+	      panel.add(vide = new JLabel());
+	      
         // Set a larger font
         Font largerFont = new Font("Arial", Font.PLAIN, 16);
 
@@ -305,6 +317,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
         submitButton = new JButton("Submit");
         submitButton.setFont(largerFont);
         panel.add(submitButton);
+  
 
         // Add action listener to the submit button
         submitButton.addActionListener(new ActionListener() {

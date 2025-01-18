@@ -21,7 +21,6 @@ public class StudentsDatabase  implements DataBase {
 	//Constructeur
 	//============================================================================
 	public StudentsDatabase() {
-		
 	}
 	public StudentsDatabase(String databaseName) {
 		// TODO Auto-generated constructor stub
@@ -152,16 +151,17 @@ public class StudentsDatabase  implements DataBase {
 	}
 	
 
-	
-	ArrayList<Students> rechercherEtudiant(String choix,String info) throws SQLException {
-		ArrayList<Students> student = null;
+	ArrayList<Students> rechercherEtudiant(String choix,String info)  {
+		ArrayList<Students> student =null;
 		Students searchedStudent = new Students("", "", "", null, "");
 		Date dateNaissance = new Date();
 		if(choix =="prenom" || choix =="nom" || choix =="E-mail" || choix=="Code Massar") {
-			PreparedStatement statement0 = myConnection.prepareStatement("select * from students where "+choix+" like ?;");
-			statement0.setString(1, info);
-			ResultSet resultset = statement0.executeQuery();
-			
+			PreparedStatement statement0;
+			ResultSet resultset;
+			try {
+				statement0 = myConnection.prepareStatement("select * from students where "+choix+" like ?;");
+				statement0.setString(1, info);
+				resultset = statement0.executeQuery();
 			while(resultset.next()) {
 				student = new ArrayList<Students>();
 				searchedStudent.setCne(resultset.getString("Code Massar"));
@@ -170,13 +170,18 @@ public class StudentsDatabase  implements DataBase {
 				searchedStudent.setEmail(resultset.getString("E-mail"));
 				searchedStudent.setDate(dateNaissance.parseDate(resultset.getString("Date de naissance")));
 				student.add(searchedStudent);
+				}
+				resultset.close();
+	            statement0.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-			  resultset.close();
-	          statement0.close();
-	          return student;
-	}else {
-		return null;
-	}
+			
+			 return student;
+			 
+		}else {
+			return null;
+		}
 	}
 
 	@Override

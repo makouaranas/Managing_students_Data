@@ -5,8 +5,11 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
@@ -23,12 +26,14 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollBar;
@@ -37,6 +42,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.AbstractBorder;
+import javax.swing.table.DefaultTableModel;
 
 
 public class InterfaceGraphique extends JFrame implements userGraphic{
@@ -54,8 +60,13 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	}
 	/*----------------------------Cette class permet de cree rounde border------------------------------------*/
 	
+
 	class RoundedBorder extends AbstractBorder {
-	    private int radius;
+	    /**
+		 * 
+		 */
+		private static final long serialVersionUID = -5260830134994952220L;
+		private int radius;
 
 	    public RoundedBorder(int radius) {
 	        this.radius = radius;
@@ -102,33 +113,37 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 		JRadioButton choixNom = new  JRadioButton("Nom");
 		JRadioButton choixPrenom = new  JRadioButton("Prenom");
 		JRadioButton choixEmail = new  JRadioButton("E-mail");
-		JPanel choix =new JPanel(new FlowLayout(FlowLayout.LEFT,10,0));
+		JPanel choix =new JPanel(new FlowLayout(FlowLayout.CENTER,40,0));
 		ButtonGroup groupRadio = new ButtonGroup();
-		String[] columName= {"Code Massar","Prenom","nom","Date de Naissance","E-mail"};
-		  
 		
-//		JTable table = new JTable(data,columName);
-//		JScrollPane scroll = new JScrollPane(table);
+		String[] columnNames = {"Code Massar", "Penom", "Nom", "Date de Naissance", "E-mail"};
+
+		
 		
 		groupRadio.add(choixCne);
 		groupRadio.add(choixNom);
 		groupRadio.add(choixPrenom);
 		groupRadio.add(choixEmail);
+		
 		choix.add(choixCne);
 		choix.add(choixPrenom);
 		choix.add(choixNom);
 		choix.add(choixEmail);
 		choix.setOpaque(false);
+		
+		searchBar.setBorder(new RoundedBorder(10));
+		searchBar.setFont(new Font("sans-serif", Font.BOLD,20));
+		searchBar.setPreferredSize(new Dimension(500,50));
+		searchBar.setOpaque(false);
+		
+		
 		searchButton.setFocusable(false);
 		searchButton.setOpaque(false);
 		searchButton.setBackground(new Color(0x4c4c4c));
 		searchButton.setBorder(new RoundedBorder(18));
 		searchButton.setPreferredSize(new Dimension(80,40));
-		searchBar.setBorder(new RoundedBorder(12));
-		searchBar.setPreferredSize(new Dimension(500,40));
-		searchBar.setOpaque(false);
 		searchButton.addActionListener(new ActionListener() {
-			
+		
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String value = searchBar.getText();
@@ -143,25 +158,43 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 					choose="E-mail";
 									
 				}else {
-					System.out.println("Error in selected if function linge ~128");
+					JOptionPane.showMessageDialog(null, "Selectione un choix");
 					return;
 				}
+				/*#########################################################################*/
 				
-//				try {
-//					ArrayList<Students> stList = st.rechercherEtudiant(choose,value);
-//					for(Students x : stList) {
-//						x.toString();
-//					}
-//				} catch (SQLException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
+				  StudentsDatabase dbManager = new StudentsDatabase();
+			        ArrayList<Students> students = dbManager.rechercherEtudiant(choose,value);
+
+			        // Convert ArrayList<Student> to a 2D array
+			        Object[][] data = new Object[students.size()][5];
+			        for (int i = 0; i < students.size(); i++) {
+			            Students student = students.get(i);
+			            data[i][0] = student.getCne();
+			            data[i][1] = student.getFirstName();
+			            data[i][2] = student.getLastName();
+			            data[i][3] = student.getDate();
+			            data[i][4] = student.getEmail();
+			        }
+
+			        // Create the table with the data and column names
+			        JTable table = new JTable(data, columnNames);
+			        JScrollPane scrollPane = new JScrollPane(table);
+			        dashboardPanel.add(table);
+			        table.setAutoCreateRowSorter(true); // Enable row sorting
+			        // Add the scroll pane to the frame
+			        add(scrollPane, BorderLayout.CENTER);
+			    
 				
-			}
-		});
+				/*############################################################################*/
+			       
+				
+		}});
+		
 		dashboardPanel.add(searchBar);
 		dashboardPanel.add(searchButton);
 		dashboardPanel.add(choix);
-//		dashboardPanel.add(table);
+		//dashboardPanel.add(table);
 		
 		sideMenu.setBackground(sideMenuColor);
 		dashboardPanel.setBackground(new Color(0xCECECE));
@@ -207,19 +240,88 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 
 	@Override
 	public void getListEtudiants() {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub		
 	}
 
 	@Override
 	public void getAjouterEtudiant() {
-		// TODO Auto-generated method stub
-		
+		StudentsDatabase studentdb = new StudentsDatabase();
+		JTextField codeMassarField, prenomField, nomField, dateNaissanceField, emailField;
+	    JButton submitButton;
+	    
+
+	  
+	       	        // Create a panel with GridBagLayout
+	    JPanel panel = new JPanel(new GridLayout(6, 2, 5, 10)); // 6 rows, 2 columns, 10px horizontal and vertical gaps
+
+        // Set a larger font
+        Font largerFont = new Font("Arial", Font.PLAIN, 16);
+
+        // Add labels and text fields
+        JLabel codeMassarLabel = new JLabel("Code Massar:");
+        codeMassarLabel.setFont(largerFont);
+        panel.add(codeMassarLabel);
+
+        codeMassarField = new JTextField();
+        codeMassarField.setFont(largerFont);
+        panel.add(codeMassarField);
+
+        JLabel prenomLabel = new JLabel("Prenom:");
+        prenomLabel.setFont(largerFont);
+        panel.add(prenomLabel);
+
+        prenomField = new JTextField();
+        prenomField.setFont(largerFont);
+        panel.add(prenomField);
+
+        JLabel nomLabel = new JLabel("Nom:");
+        nomLabel.setFont(largerFont);
+        panel.add(nomLabel);
+
+        nomField = new JTextField();
+        nomField.setFont(largerFont);
+        panel.add(nomField);
+
+        JLabel dateNaissanceLabel = new JLabel("Date de Naissance:");
+        dateNaissanceLabel.setFont(largerFont);
+        panel.add(dateNaissanceLabel);
+
+        dateNaissanceField = new JTextField();
+        dateNaissanceField.setFont(largerFont);
+        panel.add(dateNaissanceField);
+
+        JLabel emailLabel = new JLabel("E-mail:");
+        emailLabel.setFont(largerFont);
+        panel.add(emailLabel);
+
+        emailField = new JTextField();
+        emailField.setFont(largerFont);
+        panel.add(emailField);
+
+        // Add an empty label for spacing
+        panel.add(new JLabel());
+
+        // Add submit button
+        submitButton = new JButton("Submit");
+        submitButton.setFont(largerFont);
+        panel.add(submitButton);
+
+        // Add action listener to the submit button
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               
+            }
+        });
+
+        // Add the panel to the frame
+        add(panel, BorderLayout.CENTER);
+	
 	}
 
 	@Override
 	public void getModifierEtudiant() {
-		// TODO Auto-generated method stub
+			
 		
 	}
 

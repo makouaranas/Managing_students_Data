@@ -8,10 +8,16 @@ import java.awt.FlowLayout;
 
 import java.awt.Font;
 
+
+import java.awt.Font;
+
 import java.awt.GridLayout;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -23,6 +29,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Label;
+import java.awt.PageAttributes.OrientationRequestedType;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.TextArea;
@@ -30,13 +37,21 @@ import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.print.PrinterException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
 
+
 import javax.swing.BorderFactory;
+
+
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttribute;
+import javax.print.attribute.PrintRequestAttributeSet;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -56,7 +71,12 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.AbstractBorder;
+
 import javax.swing.table.DefaultTableModel;
+
+import javax.swing.table.JTableHeader;
+
+
 
 
 public class InterfaceGraphique extends JFrame implements userGraphic{
@@ -87,6 +107,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
+	JButton returnButton = new JButton("<--");
 	/*----------------------------Cette class permet de cree rounde border------------------------------------*/
 	
 
@@ -146,16 +167,21 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 		searchBar.setFont(new Font("sans-serif", Font.BOLD,20));
 		searchBar.setPreferredSize(new Dimension(500,50));
 		searchBar.setOpaque(false);
-		
+		searchBar.setVisible(true);
 		JButton searchButton = new JButton("Search");
-		JRadioButton choixCne = new  JRadioButton("Cne");
+		searchButton.setVisible(true);
+		JRadioButton choixCne = new  JRadioButton("Cne") ;
 		choixCne.setOpaque(false);
+		choixCne.setFocusable(false);
 		JRadioButton choixNom = new  JRadioButton("Nom");
 		choixNom.setOpaque(false);
+		choixNom.setFocusable(false);
 		JRadioButton choixPrenom = new  JRadioButton("Prenom");
 		choixPrenom.setOpaque(false);
+		choixPrenom.setFocusable(false);
 		JRadioButton choixEmail = new  JRadioButton("E-mail");
 		choixEmail.setOpaque(false);
+		choixEmail.setFocusable(false);
 		JPanel choix =new JPanel(new FlowLayout(FlowLayout.CENTER,10,10));
 		choix.add(choixCne);
 		choix.add(choixPrenom);
@@ -170,7 +196,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 		groupRadio.add(choixPrenom);
 		groupRadio.add(choixEmail);
 		
-		String[] columnNames = {"Code Massar", "Penom", "Nom", "Date de Naissance", "E-mail"};
+		String[] columnNames = {"Code Massar", "Penom", "Nom", "Date de Naissance", "E-mail","Remove","Edite"};
 		
 		
 		searchButton.setFocusable(false);
@@ -178,11 +204,30 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 		searchButton.setBackground(new Color(0x4c4c4c));
 		searchButton.setBorder(new RoundedBorder(18));
 		searchButton.setPreferredSize(new Dimension(80,40));
+		
+		
+		returnButton.setFocusable(false);
+		returnButton.setBackground(new Color(0x4c4c4c));
+		returnButton.setBorder(new RoundedBorder(20));
+		returnButton.setOpaque(false);
+		returnButton.setPreferredSize(new Dimension(40,30));
+		returnButton.setVisible(false);
+		returnButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				getAccueil();
+				
+				
+			}
+		});
+		
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BoxLayout(topPanel,BoxLayout.Y_AXIS));
 		
 		JPanel searchPanel =new JPanel(new FlowLayout(FlowLayout.CENTER,40,10));
-		
+		searchPanel.add(returnButton);
 		searchPanel.add(searchBar);
 		searchPanel.add(searchButton);
 		topPanel.add(searchPanel);
@@ -191,11 +236,17 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 //		dashboardPanel.add(searchButton);
 		dashboardPanel.add(choix);
 		//dashboardPanel.add(table);
-		searchButton.addActionListener(new ActionListener() {
 		
+		searchButton.addActionListener(new ActionListener() {
+			
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				returnButton.setVisible(true);
+				searchBar.setVisible(false);
+				searchButton.setVisible(false);
+				choix.setVisible(false);
+				JPanel tablePanel ;
 				String value = searchBar.getText();
 				String choose="";
 				if(choixCne.isSelected()) {
@@ -211,37 +262,46 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 					return;
 				}
 				/*#########################################################################*/
-			        ArrayList<Students> students;
-					try {
-						students = database.rechercherEtudiant(choose,value);
-						// Convert ArrayList<Student> to a 2D array
-				        Object[][] data = new Object[students.size()][5];
-				        for (int i = 0; i < students.size(); i++) {
-				            Students student = students.get(i);
-				            data[i][0] = student.getCne();
-				            data[i][1] = student.getFirstName();
-				            data[i][2] = student.getLastName();
-				            data[i][3] = student.getDate();
-				            data[i][4] = student.getEmail();
-				        }
-				     // Create the table with the data and column names
-				        JTable table = new JTable(data, columnNames);
-				        JScrollPane scrollPane = new JScrollPane(table);
-				        if (dashboardPanel.getComponentCount() > 1) {
-	                        dashboardPanel.remove(1); // Remove the center component
-	                    }
-//				        table.setAutoCreateRowSorter(false); // Enable row sorting
-				        // Add the scroll pane to the frame
+			       
+				tablePanel = new JPanel(new BorderLayout());
+				ArrayList<Students> students;
+				students = database.rechercherEtudiant(choose,value);
+				// Convert ArrayList<Student> to a 2D array
+				Object[][] data = new Object[students.size()][7];
 				
+				for (int i = 0; i < students.size(); i++) {
+				    Students student = students.get(i);
+				    data[i][0] = student.getCne();
+				    data[i][1] = student.getFirstName();
+				    data[i][2] = student.getLastName();
+				    data[i][3] = student.getDate();
+				    data[i][4] = student.getEmail();
+				    data[i][5] = "Remove";
+				    data[i][6] = "EDITE";
+				}
 
-				        dashboardPanel.add(scrollPane,BorderLayout.CENTER);
-				        dashboardPanel.revalidate();
-				        dashboardPanel.repaint();
-				        
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+    // Create the table with the data and column names
+				
+				DefaultTableModel model =new DefaultTableModel(data,columnNames) {
+					@Override
+					public boolean isCellEditable(int row, int column) {
+						// TODO Auto-generated method stub
+						return column == 5 || column == 6;
+						
 					}
+				};
+				
+				JTable table = new JTable(model);
+				JScrollPane scrollPane = new JScrollPane(table);
+				tablePanel.removeAll();
+				tablePanel.add(scrollPane, BorderLayout.CENTER);
+				table.setAutoCreateRowSorter(true); // Enable row sorting
+				// Add the scroll pane to the frame
+
+
+				dashboardPanel.add(tablePanel,BorderLayout.SOUTH);
+				dashboardPanel.revalidate();
+				dashboardPanel.repaint();
 					
 		
 
@@ -349,111 +409,270 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	public void getListEtudiants() {
 
 
+
 		// TODO Auto-generated method stub
+
+		String headers[] = {"Code Massar","Nom","Prénom","Date de naissance","E-mail"}; 
+		JPanel mainPanel = new JPanel(new BorderLayout());
+		JPanel centerPanel = new JPanel(new BorderLayout());
+	    JPanel northPanel = new JPanel(new BorderLayout());
+	    
+	    northPanel.setPreferredSize(new Dimension(800,50));
+	    
+	    ArrayList<Students> rowData =  database.afficherEtudiants();
+	    int rowDataSize = rowData.size();
+	    String data[][] = new String[rowDataSize][5];
+	    for(int i = 0; i<rowDataSize; i++) {
+	    	data[i]= new String[]{
+	    			rowData.get(i).getCne(),
+	    			rowData.get(i).getLastName(),
+	    			rowData.get(i).getFirstName(),
+	    			rowData.get(i).getDate().toString(),
+	    			rowData.get(i).getEmail()};
+	    }
+	    JTable table = new JTable(data,headers) {
+	    	@Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+	    };
+	    
+	    table.getTableHeader().setOpaque(false);
+	    table.getTableHeader().setBackground(new Color(0x181B29));
+	    table.getTableHeader().setForeground(new Color(0xFFFFFF));
+	    
+        JTableHeader tableHeader = table.getTableHeader();
+        Font headerFont = tableHeader.getFont();
+        tableHeader.setFont(headerFont.deriveFont(Font.BOLD));
+        
+	    JScrollPane scrollPlane = new JScrollPane(table);
+	    centerPanel.add(scrollPlane);
+	    
+		ImageIcon goBackIcon = new ImageIcon("resources/back.png");
+		Image scaledGoBackIcon = goBackIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+		JLabel goBackIconLabel = new JLabel(new ImageIcon(scaledGoBackIcon));
+
+		northPanel.add(goBackIconLabel,BorderLayout.WEST);
 		
+
+		goBackIconLabel.addMouseListener(new MouseAdapter() {
+			@Override
+            public void mousePressed(MouseEvent e) {
+				getAccueil();
+            }
+		});
+		
+		ImageIcon printiIcon = new ImageIcon("resources/printer.png");
+		Image scaledPrintiIcon = printiIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+		JLabel printiIconLabel = new JLabel(new ImageIcon(scaledPrintiIcon));
+		
+		printiIconLabel.addMouseListener(new MouseAdapter() {
+			@Override
+            public void mousePressed(MouseEvent e) {
+				MessageFormat header = new MessageFormat("List des Etudiants");
+				
+				try {
+					PrintRequestAttributeSet set = new HashPrintRequestAttributeSet();
+					table.print(JTable.PrintMode.FIT_WIDTH,header,null,true,set,true);
+					JOptionPane.showMessageDialog(null, "\n"+"Le fichier a été imprimé avec succès");
+				} catch (HeadlessException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (PrinterException e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(null, "\n"+"Une erreur s'est produite lors de l'impression");
+					e1.printStackTrace();
+				}
+			}
+		});
+		
+		northPanel.add(printiIconLabel,BorderLayout.EAST);
+		
+		
+		mainPanel.add(northPanel,BorderLayout.NORTH);
+		mainPanel.add(centerPanel,BorderLayout.CENTER);
+		this.setContentPane(mainPanel);
 		this.setVisible(true);
 
 	}
 
 	@Override
 	public void getAjouterEtudiant() {
-		JTextField codeMassarField, prenomField, nomField, dateNaissanceField, emailField;
+	    JTextField codeMassarField, prenomField, nomField, dateNaissanceField, emailField;
 	    JButton submitButton;
 	    JButton backButton;
-	    JLabel vide;
-	    backButton = new JButton("← Back");
+	    
+
+	   
+	    JPanel panel = new JPanel(new GridBagLayout());
+	    panel.setBackground(new Color(240, 240, 240)); 
+	    GridBagConstraints gbc = new GridBagConstraints();
+	    gbc.insets = new Insets(10, 10, 10, 10);
+	    // Load the image for the back button
+	    ImageIcon backIcon = new ImageIcon("resources/back.png"); 
+	    Image backImage = backIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH); // Resize the image
+	    backIcon = new ImageIcon(backImage); // Create a new ImageIcon with the resized image
+
+	    // Back button with image and styling
+	    backButton = new JButton(backIcon); // Set the image as the button's icon
+	    backButton.setText(""); // Remove text (optional)
 	    backButton.setOpaque(false);
 	    backButton.setBorder(new RoundedBorder(15));
+	    backButton.setBackground(new Color(0x4c4c4c)); // Dark gray background
+	    backButton.setForeground(Color.WHITE); // White text
+	    backButton.setFocusPainted(false); // Remove focus border
+	    backButton.setFont(new Font("Segoe UI", Font.BOLD, 14)); // Modern font
 	    backButton.addActionListener(new ActionListener() {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	            getAccueil();
+	        }
+	    });
+
+	    gbc.gridx = 0;
+	    gbc.gridy = 0;
+	    gbc.gridwidth = 2;
+	    gbc.anchor = GridBagConstraints.WEST;
+	    panel.add(backButton, gbc);
+
+	    // Set a larger font for labels and text fields
+	    Font largerFont = new Font("Segoe UI", Font.PLAIN, 16);
+
+	    // Add labels and text fields
+	    gbc.gridwidth = 1;
+	    gbc.gridy++;
+	    gbc.anchor = GridBagConstraints.EAST;
+	    JLabel codeMassarLabel = new JLabel("Code Massar:");
+	    codeMassarLabel.setFont(largerFont);
+	    panel.add(codeMassarLabel, gbc);
+
+	    gbc.gridx = 1;
+	    gbc.anchor = GridBagConstraints.WEST;
+	    codeMassarField = new JTextField(20);
+	    codeMassarField.setFont(largerFont);
+	    codeMassarField.setBorder(new RoundedBorder(10)); 
+	    panel.add(codeMassarField, gbc);
+
+	    gbc.gridx = 0;
+	    gbc.gridy++;
+	    gbc.anchor = GridBagConstraints.EAST;
+	    JLabel prenomLabel = new JLabel("Prenom:");
+	    prenomLabel.setFont(largerFont);
+	    panel.add(prenomLabel, gbc);
+
+	    gbc.gridx = 1;
+	    gbc.anchor = GridBagConstraints.WEST;
+	    prenomField = new JTextField(20);
+	    prenomField.setFont(largerFont);
+	    prenomField.setBorder(new RoundedBorder(10)); 
+	    panel.add(prenomField, gbc);
+
+	    gbc.gridx = 0;
+	    gbc.gridy++;
+	    gbc.anchor = GridBagConstraints.EAST;
+	    JLabel nomLabel = new JLabel("Nom:");
+	    nomLabel.setFont(largerFont);
+	    panel.add(nomLabel, gbc);
+
+	    gbc.gridx = 1;
+	    gbc.anchor = GridBagConstraints.WEST;
+	    nomField = new JTextField(20);
+	    nomField.setFont(largerFont);
+	    nomField.setBorder(new RoundedBorder(10)); 
+	    panel.add(nomField, gbc);
+
+	    gbc.gridx = 0;
+	    gbc.gridy++;
+	    gbc.anchor = GridBagConstraints.EAST;
+	    JLabel dateNaissanceLabel = new JLabel("Date de Naissance:");
+	    dateNaissanceLabel.setFont(largerFont);
+	    panel.add(dateNaissanceLabel, gbc);
+
+	    gbc.gridx = 1;
+	    gbc.anchor = GridBagConstraints.WEST;
+	    dateNaissanceField = new JTextField("jj/mm/aaaa",20);
+	    dateNaissanceField.addFocusListener(new FocusListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				getAccueil();
+			public void focusLost(FocusEvent e) {
+				 if (dateNaissanceField.getText().equals("jj/mm/aaaa")) {
+	                    dateNaissanceField.setText("");
+	                    dateNaissanceField.setForeground(Color.BLACK); 
+	                }
+				
+			}
+			
+			@Override
+			public void focusGained(FocusEvent e) {
+				 if (dateNaissanceField.getText().isEmpty()) {
+	                    dateNaissanceField.setText("jj/mm/aaaa");
+	                    dateNaissanceField.setForeground(Color.GRAY); 
+	                }
+				
 			}
 		});
-	  
-	       	        // Create a panel with GridBagLayout
-	    JPanel panel = new JPanel(new GridLayout(8, 2, 10, 10)); // 6 rows, 2 columns, 10px horizontal and vertical gaps	
-	      panel.add(backButton);
-	      
-	      panel.add(vide = new JLabel());
-	      
-        // Set a larger font
-        Font largerFont = new Font("Arial", Font.PLAIN, 16);
+	    dateNaissanceField.setFont(largerFont);
+	    dateNaissanceField.setBorder(new RoundedBorder(10)); 
+	    panel.add(dateNaissanceField, gbc);
 
-        // Add labels and text fields
-        JLabel codeMassarLabel = new JLabel("Code Massar:");
-        codeMassarLabel.setFont(largerFont);
-        panel.add(codeMassarLabel);
+	    gbc.gridx = 0;
+	    gbc.gridy++;
+	    gbc.anchor = GridBagConstraints.EAST;
+	    JLabel emailLabel = new JLabel("E-mail:");
+	    emailLabel.setFont(largerFont);
+	    panel.add(emailLabel, gbc);
 
-        codeMassarField = new JTextField();
-        codeMassarField.setFont(largerFont);
-        panel.add(codeMassarField);
+	    gbc.gridx = 1;
+	    gbc.anchor = GridBagConstraints.WEST;
+	    emailField = new JTextField(20);
+	    emailField.setFont(largerFont);
+	    emailField.setBorder(new RoundedBorder(10));
+	    panel.add(emailField, gbc);
+	    // Add submit button
+	    gbc.gridx = 0;
+	    gbc.gridy++;
+	    gbc.gridwidth = 2;
+	    gbc.anchor = GridBagConstraints.CENTER;
+	    submitButton = new JButton("Submit");
+	    submitButton.setFont(new Font("Segoe UI", Font.BOLD, 16));
+	    submitButton.setBackground(new Color(0x4CAF50)); 
+	    submitButton.setForeground(Color.WHITE); 
+	    submitButton.setFocusPainted(false); 
+	    submitButton.setBorder(new RoundedBorder(15)); 
+	    submitButton.setPreferredSize(new Dimension(120, 40)); 
+	    panel.add(submitButton, gbc);
+	    // Add action listener to the submit button
+	    submitButton.addActionListener(new ActionListener() {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	        	 Date d = new Date();
+	        	 
+	        	 
+	        	 if(!codeMassarField.getText().isBlank() && !prenomField.getText().isBlank()&& !nomField.getText().isBlank() && !emailField.getText().isBlank()  && d.parseDate(dateNaissanceField.getText()).validDate() ==0) {
+	        	Students  addedStudent = new Students(
+	        			codeMassarField.getText(),
+	        			prenomField.getText(),
+	        			nomField.getText(),
+	        			d.parseDate(dateNaissanceField.getText()),
+	        			emailField.getText()
+	        			);
+	            database.ajouterEtudiant(addedStudent);
+	            JOptionPane.showConfirmDialog(null, "L'etudient est ajoute sucessuf");
+	        	 }else if( d.validDate() ==-1) {
+	        		 JOptionPane.showMessageDialog(null, "Le date est incorrect \n \n essay d'utilise la forma suivant jj/nn/aaaa.");
+	        		
+	        	 }else{
+	        		 JOptionPane.showMessageDialog(null, "SVP remplie tout les informations");
+	        	 }
+	        }
+	    });
 
-        JLabel prenomLabel = new JLabel("Prenom:");
-        prenomLabel.setFont(largerFont);
-        panel.add(prenomLabel);
-
-        prenomField = new JTextField();
-        prenomField.setFont(largerFont);
-        panel.add(prenomField);
-
-        JLabel nomLabel = new JLabel("Nom:");
-        nomLabel.setFont(largerFont);
-        panel.add(nomLabel);
-
-        nomField = new JTextField();
-        nomField.setFont(largerFont);
-        panel.add(nomField);
-
-        JLabel dateNaissanceLabel = new JLabel("Date de Naissance:");
-        dateNaissanceLabel.setFont(largerFont);
-        panel.add(dateNaissanceLabel);
-
-        dateNaissanceField = new JTextField();
-        dateNaissanceField.setFont(largerFont);
-        panel.add(dateNaissanceField);
-
-        JLabel emailLabel = new JLabel("E-mail:");
-        emailLabel.setFont(largerFont);
-        panel.add(emailLabel);
-
-        emailField = new JTextField();
-        emailField.setFont(largerFont);
-        panel.add(emailField);
-
-        // Add an empty label for spacing
-        panel.add(new JLabel());
-
-        // Add submit button
-        submitButton = new JButton("Submit");
-        submitButton.setFont(largerFont);
-        panel.add(submitButton);
-  
-
-        // Add action listener to the submit button
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            	String cne,prenom,nom,email,date;
-            	cne = codeMassarField.getText();
-            	prenom= prenomField.getText();
-            	nom=nomField.getText();
-            	email = emailField.getText();
-            	date = dateNaissanceField.getText();
-            	Date d =new Date();
-            	d.parseDate(date);
-               
-            }
-        });
-
-        // Add the panel to the frame
-        add(panel, BorderLayout.CENTER);
-        this.setContentPane(panel);
-        this.setVisible(true);
-       
-	
+	    // Add the panel to the frame
+	    add(panel, BorderLayout.CENTER);
+	    this.setContentPane(panel);
+	    this.validate();
+	    this.repaint();
+	    this.setVisible(true);
 	}
 
 

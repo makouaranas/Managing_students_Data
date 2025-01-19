@@ -151,8 +151,10 @@ public class StudentsDatabase  implements DataBase {
 	}
 	
 
-	ArrayList<Students> rechercherEtudiant(String choix,String info)  {
-		ArrayList<Students> student =null;
+
+	
+	public ArrayList<Students> rechercherEtudiant(String choix,String info) throws SQLException {
+		ArrayList<Students> student = null;
 		Students searchedStudent = new Students("", "", "", null, "");
 		Date dateNaissance = new Date();
 		if(choix =="prenom" || choix =="nom" || choix =="E-mail" || choix=="Code Massar") {

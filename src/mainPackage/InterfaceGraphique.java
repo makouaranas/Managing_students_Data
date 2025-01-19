@@ -71,7 +71,11 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	
 	private StudentsDatabase database;
 	private ImageIcon appLogo;
+
 	
+
+
+
 	public InterfaceGraphique() {
 		//Initiating database-------------------------------------------------
 		database = new StudentsDatabase("students");
@@ -229,6 +233,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 //				        table.setAutoCreateRowSorter(false); // Enable row sorting
 				        // Add the scroll pane to the frame
 				
+
 				        dashboardPanel.add(scrollPane,BorderLayout.CENTER);
 				        dashboardPanel.revalidate();
 				        dashboardPanel.repaint();
@@ -238,6 +243,8 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 						e1.printStackTrace();
 					}
 					
+		
+
 				/*############################################################################*/
 			       	
 		}});
@@ -350,19 +357,18 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 
 	@Override
 	public void getAjouterEtudiant() {
-
-		
 		JTextField codeMassarField, prenomField, nomField, dateNaissanceField, emailField;
 	    JButton submitButton;
 	    JButton backButton;
 	    JLabel vide;
 	    backButton = new JButton("← Back");
+	    backButton.setOpaque(false);
+	    backButton.setBorder(new RoundedBorder(15));
 	    backButton.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				getAccueil();
-				
 			}
 		});
 	  
@@ -429,6 +435,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
             	String cne,prenom,nom,email,date;
             	cne = codeMassarField.getText();
             	prenom= prenomField.getText();

@@ -21,6 +21,7 @@ public class StudentsDatabase  implements DataBase {
 	//Constructeur
 	//============================================================================
 	public StudentsDatabase() {
+
 	}
 	public StudentsDatabase(String databaseName) {
 		// TODO Auto-generated constructor stub

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -14,11 +15,14 @@ public class StudentsDatabase  implements DataBase {
 	private static String url = "jdbc:mysql://localhost:3306/";
     private final static String username = "root";
     private final static String password = "";
-	private Connection myConnection;
+	private Connection myConnection ;
 
 	
 	//Constructeur
 	//============================================================================
+	public StudentsDatabase() {
+		
+	}
 	public StudentsDatabase(String databaseName) {
 		// TODO Auto-generated constructor stub
 		System.out.println("Connecting to database...");
@@ -155,6 +159,7 @@ public class StudentsDatabase  implements DataBase {
 			PreparedStatement statement0 = myConnection.prepareStatement("select * from students where "+choix+" like ?;");
 			statement0.setString(1, info);
 			ResultSet resultset = statement0.executeQuery();
+			
 			while(resultset.next()) {
 				student = new ArrayList<Students>();
 				searchedStudent.setCne(resultset.getString("Code Massar"));

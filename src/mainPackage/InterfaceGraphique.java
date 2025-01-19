@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -131,39 +132,41 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 //		JPanel dashboardPanel = new JPanel();
 		JPanel emptyPanel = new JPanel();
 		JPanel optionSideMenu = new JPanel(new GridLayout(8, 1));
-
 		emptyPanel.setBackground(sideMenuColor);
-		JPanel dashboardPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,5,50));
 		
+		
+		JPanel dashboardPanel = new JPanel(new BorderLayout());	
 //		JPanel optionSideMenu = new JPanel(new GridLayout(6, 1));
 		JTextField searchBar = new JTextField();
+		searchBar.setBorder(new RoundedBorder(10));
+		searchBar.setFont(new Font("sans-serif", Font.BOLD,20));
+		searchBar.setPreferredSize(new Dimension(500,50));
+		searchBar.setOpaque(false);
+		
 		JButton searchButton = new JButton("Search");
 		JRadioButton choixCne = new  JRadioButton("Cne");
+		choixCne.setOpaque(false);
 		JRadioButton choixNom = new  JRadioButton("Nom");
+		choixNom.setOpaque(false);
 		JRadioButton choixPrenom = new  JRadioButton("Prenom");
+		choixPrenom.setOpaque(false);
 		JRadioButton choixEmail = new  JRadioButton("E-mail");
-		JPanel choix =new JPanel(new FlowLayout(FlowLayout.CENTER,40,0));
-		ButtonGroup groupRadio = new ButtonGroup();
-		
-		String[] columnNames = {"Code Massar", "Penom", "Nom", "Date de Naissance", "E-mail"};
-
-		
-		
-		groupRadio.add(choixCne);
-		groupRadio.add(choixNom);
-		groupRadio.add(choixPrenom);
-		groupRadio.add(choixEmail);
-		
+		choixEmail.setOpaque(false);
+		JPanel choix =new JPanel(new FlowLayout(FlowLayout.CENTER,10,10));
 		choix.add(choixCne);
 		choix.add(choixPrenom);
 		choix.add(choixNom);
 		choix.add(choixEmail);
 		choix.setOpaque(false);
 		
-		searchBar.setBorder(new RoundedBorder(10));
-		searchBar.setFont(new Font("sans-serif", Font.BOLD,20));
-		searchBar.setPreferredSize(new Dimension(500,50));
-		searchBar.setOpaque(false);
+		
+		ButtonGroup groupRadio = new ButtonGroup();
+		groupRadio.add(choixCne);
+		groupRadio.add(choixNom);
+		groupRadio.add(choixPrenom);
+		groupRadio.add(choixEmail);
+		
+		String[] columnNames = {"Code Massar", "Penom", "Nom", "Date de Naissance", "E-mail"};
 		
 		
 		searchButton.setFocusable(false);
@@ -171,8 +174,22 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 		searchButton.setBackground(new Color(0x4c4c4c));
 		searchButton.setBorder(new RoundedBorder(18));
 		searchButton.setPreferredSize(new Dimension(80,40));
+		JPanel topPanel = new JPanel();
+		topPanel.setLayout(new BoxLayout(topPanel,BoxLayout.Y_AXIS));
+		
+		JPanel searchPanel =new JPanel(new FlowLayout(FlowLayout.CENTER,40,10));
+		
+		searchPanel.add(searchBar);
+		searchPanel.add(searchButton);
+		topPanel.add(searchPanel);
+		topPanel.add(choix);
+		dashboardPanel.add(topPanel, BorderLayout.NORTH);
+//		dashboardPanel.add(searchButton);
+		dashboardPanel.add(choix);
+		//dashboardPanel.add(table);
 		searchButton.addActionListener(new ActionListener() {
 		
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String value = searchBar.getText();
@@ -184,15 +201,12 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 				}else if(choixPrenom.isSelected()) {
 					choose="prenom";
 				}else if(choixEmail.isSelected()) {
-					choose="E-mail";
-									
+					choose="E-mail";		
 				}else {
 					JOptionPane.showMessageDialog(null, "Selectione un choix");
 					return;
 				}
 				/*#########################################################################*/
-				
-				  
 			        ArrayList<Students> students;
 					try {
 						students = database.rechercherEtudiant(choose,value);
@@ -209,23 +223,26 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 				     // Create the table with the data and column names
 				        JTable table = new JTable(data, columnNames);
 				        JScrollPane scrollPane = new JScrollPane(table);
-				        dashboardPanel.add(table);
-				        table.setAutoCreateRowSorter(true); // Enable row sorting
+				        if (dashboardPanel.getComponentCount() > 1) {
+	                        dashboardPanel.remove(1); // Remove the center component
+	                    }
+//				        table.setAutoCreateRowSorter(false); // Enable row sorting
 				        // Add the scroll pane to the frame
-				        add(scrollPane, BorderLayout.CENTER);
+				
+				        dashboardPanel.add(scrollPane,BorderLayout.CENTER);
+				        dashboardPanel.revalidate();
+				        dashboardPanel.repaint();
+				        
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-
+					
 				/*############################################################################*/
 			       	
 		}});
-		
-		dashboardPanel.add(searchBar);
-		dashboardPanel.add(searchButton);
-		dashboardPanel.add(choix);
-		//dashboardPanel.add(table);
+
+		add(dashboardPanel);
 		
 		sideMenu.setBackground(sideMenuColor);
 		dashboardPanel.setBackground(new Color(0xCECECE));
@@ -315,9 +332,10 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 		homePanel.add(dashboardPanel, BorderLayout.CENTER);
 		// Set content pane
 		this.setContentPane(homePanel);
-		this.setVisible(true);
 		this.revalidate();
 		this.repaint();
+		this.setVisible(true);
+		
 		}
 
 	@Override
@@ -411,6 +429,14 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+            	String cne,prenom,nom,email,date;
+            	cne = codeMassarField.getText();
+            	prenom= prenomField.getText();
+            	nom=nomField.getText();
+            	email = emailField.getText();
+            	date = dateNaissanceField.getText();
+            	Date d =new Date();
+            	d.parseDate(date);
                
             }
         });
@@ -558,7 +584,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
           
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+		
 				int response = JOptionPane.showConfirmDialog(InterfaceGraphique.this, "Voulez-vous sauvegarder votre modification ?", "Confirmation", JOptionPane.YES_NO_CANCEL_OPTION);
 				if (response == JOptionPane.YES_OPTION) {
 					newCne = cneInput.getText();
@@ -566,15 +592,12 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 					newLastName = lastNameInput.getText();
 					newBirthdate = birthdayInput.getText();
 					newEmail = emailInput.getText();
-					
 					database.modifierEtudiant(student.getCne(), new Students(newCne, newFirstName, newLastName,bufferDate.parseDate(newBirthdate), newEmail));
-					
 					cneInput.setEnabled(false);
 				    firstNameInput.setEnabled(false);
 				    lastNameInput.setEnabled(false);
 				    birthdayInput.setEnabled(false);
-				    emailInput.setEnabled(false);
-					
+				    emailInput.setEnabled(false);	
 				} else if (response == JOptionPane.NO_OPTION) {
 					cneInput.setText(student.getCne());
 				    firstNameInput.setText(student.getFirstName());

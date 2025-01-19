@@ -161,7 +161,7 @@ public class StudentsDatabase  implements DataBase {
 			PreparedStatement statement0;
 			ResultSet resultset;
 			try {
-				statement0 = myConnection.prepareStatement("select * from students where "+choix+" like ?;");
+				statement0 = myConnection.prepareStatement("select * from students where "+choix+" like ? ;");
 				statement0.setString(1, info);
 				resultset = statement0.executeQuery();
 			while(resultset.next()) {

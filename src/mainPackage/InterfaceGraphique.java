@@ -5,7 +5,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +19,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Label;
+import java.awt.PageAttributes.OrientationRequestedType;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.TextArea;
@@ -24,12 +27,16 @@ import java.awt.TextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.print.PrinterException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 
-
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttribute;
+import javax.print.attribute.PrintRequestAttributeSet;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -47,6 +54,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.AbstractBorder;
+import javax.swing.table.JTableHeader;
+
 
 
 public class InterfaceGraphique extends JFrame implements userGraphic{
@@ -284,8 +293,87 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 
 	@Override
 	public void getListEtudiants() {
-		// TODO Auto-generated method stub
+		String headers[] = {"Code Massar","Nom","Prénom","Date de naissance","E-mail"}; 
+		JPanel mainPanel = new JPanel(new BorderLayout());
+		JPanel centerPanel = new JPanel(new BorderLayout());
+	    JPanel northPanel = new JPanel(new BorderLayout());
+	    
+	    northPanel.setPreferredSize(new Dimension(800,50));
+	    
+	    ArrayList<Students> rowData =  database.afficherEtudiants();
+	    int rowDataSize = rowData.size();
+	    String data[][] = new String[rowDataSize][5];
+	    for(int i = 0; i<rowDataSize; i++) {
+	    	data[i]= new String[]{
+	    			rowData.get(i).getCne(),
+	    			rowData.get(i).getLastName(),
+	    			rowData.get(i).getFirstName(),
+	    			rowData.get(i).getDate().toString(),
+	    			rowData.get(i).getEmail()};
+	    }
 		
+	    JTable table = new JTable(data,headers) {
+	    	@Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+	    };
+	    
+	    table.getTableHeader().setOpaque(false);
+	    table.getTableHeader().setBackground(new Color(0x181B29));
+	    table.getTableHeader().setForeground(new Color(0xFFFFFF));
+	    
+        JTableHeader tableHeader = table.getTableHeader();
+        Font headerFont = tableHeader.getFont();
+        tableHeader.setFont(headerFont.deriveFont(Font.BOLD));
+        
+	    JScrollPane scrollPlane = new JScrollPane(table);
+	    centerPanel.add(scrollPlane);
+	    
+		ImageIcon goBackIcon = new ImageIcon("resources/back.png");
+		Image scaledGoBackIcon = goBackIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+		JLabel goBackIconLabel = new JLabel(new ImageIcon(scaledGoBackIcon));
+
+		northPanel.add(goBackIconLabel,BorderLayout.WEST);
+		
+
+		goBackIconLabel.addMouseListener(new MouseAdapter() {
+			@Override
+            public void mousePressed(MouseEvent e) {
+				getAccueil();
+            }
+		});
+		
+		ImageIcon printiIcon = new ImageIcon("resources/printer.png");
+		Image scaledPrintiIcon = printiIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+		JLabel printiIconLabel = new JLabel(new ImageIcon(scaledPrintiIcon));
+		
+		printiIconLabel.addMouseListener(new MouseAdapter() {
+			@Override
+            public void mousePressed(MouseEvent e) {
+				MessageFormat header = new MessageFormat("List des Etudiants");
+				
+				try {
+					PrintRequestAttributeSet set = new HashPrintRequestAttributeSet();
+					table.print(JTable.PrintMode.FIT_WIDTH,header,null,true,set,true);
+					JOptionPane.showMessageDialog(null, "\n"+"Le fichier a été imprimé avec succès");
+				} catch (HeadlessException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (PrinterException e1) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(null, "\n"+"Une erreur s'est produite lors de l'impression");
+					e1.printStackTrace();
+				}
+			}
+		});
+		
+		northPanel.add(printiIconLabel,BorderLayout.EAST);
+		
+		
+		mainPanel.add(northPanel,BorderLayout.NORTH);
+		mainPanel.add(centerPanel,BorderLayout.CENTER);
+		this.setContentPane(mainPanel);
 		this.setVisible(true);
 	}
 

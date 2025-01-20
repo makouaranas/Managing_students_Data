@@ -441,6 +441,8 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	    table.getTableHeader().setBackground(new Color(0x181B29));
 	    table.getTableHeader().setForeground(new Color(0xFFFFFF));
 	    
+	    table.getTableHeader().setReorderingAllowed(false);
+	    
         JTableHeader tableHeader = table.getTableHeader();
         Font headerFont = tableHeader.getFont();
         tableHeader.setFont(headerFont.deriveFont(Font.BOLD));

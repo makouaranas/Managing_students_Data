@@ -36,21 +36,9 @@ public interface DataBase {
 	 * @param nom String that holds the last name of the Student that we search for.
 	 * @return an object of type StudentClass that holds the data of the student that we search for.
 	 */
-	public Students rechercherEtudiantParNom(String nom);
+	public ArrayList<Students> rechercherEtudiant(String choix,String info);
 	
-	/***
-	 * This method search the entire database looking for Student with the same first name, and returns an object of type StudentClass of that student.
-	 * @param prenom String that holds the first name of the Student that we search for.
-	 * @return an object of type StudentClass that holds the data of the student that we search for.
-	 */
-	public Students rechercherEtudiantParPrenom(String prenom);
 	
-	/***
-	 * This method search the entire database looking for Student with the same e-mail, and returns an object of type StudentClass of that student.
-	 * @param email String that holds the e-mail of the Student that we search for.
-	 * @return an object of type StudentClass that holds the data of the student that we search for.
-	 */
-	public Students rechercherEtudiantParEmail(String email);
 	
 	/***
 	 * This method search the entire database looking for the student with the same unique identifier "codeMassar", and return true if the student exist. 

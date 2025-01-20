@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -133,45 +132,30 @@ public class StudentsDatabase  implements DataBase {
 		return null;
 	}
 
-	@Override
-	public Students rechercherEtudiantParNom(String nom) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Students rechercherEtudiantParPrenom(String prenom) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Students rechercherEtudiantParEmail(String email) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-
 
 	
-	public ArrayList<Students> rechercherEtudiant(String choix,String info) throws SQLException {
-		ArrayList<Students> student = null;
-		Students searchedStudent = new Students("", "", "", null, "");
+	public ArrayList<Students> rechercherEtudiant(String choix,String info){
+		ArrayList<Students> student = new ArrayList<>();
+		
+		
 		Date dateNaissance = new Date();
 		if(choix =="prenom" || choix =="nom" || choix =="E-mail" || choix=="Code Massar") {
 			PreparedStatement statement0;
 			ResultSet resultset;
+			
 			try {
-				statement0 = myConnection.prepareStatement("select * from students where "+choix+" like ? ;");
-				statement0.setString(1, info);
+				statement0 = myConnection.prepareStatement("SELECT * FROM students WHERE `" + choix + "` LIKE ?;");
+	            statement0.setString(1, "%" + info + "%");
 				resultset = statement0.executeQuery();
-			while(resultset.next()) {
 				student = new ArrayList<Students>();
-				searchedStudent.setCne(resultset.getString("Code Massar"));
-				searchedStudent.setFirstName(resultset.getString("Prenom"));
-				searchedStudent.setLastName(resultset.getString("Nom"));
-				searchedStudent.setEmail(resultset.getString("E-mail"));
-				searchedStudent.setDate(dateNaissance.parseDate(resultset.getString("Date de naissance")));
+			while(resultset.next()) {
+				Students searchedStudent = new Students(
+				resultset.getString("Code Massar"),
+				resultset.getString("Prenom"),
+				resultset.getString("Nom"),
+				dateNaissance.parseDate(resultset.getString("Date de naissance")),
+				resultset.getString("E-mail")
+			);
 				student.add(searchedStudent);
 				}
 				resultset.close();
@@ -181,7 +165,6 @@ public class StudentsDatabase  implements DataBase {
 			}
 			
 			 return student;
-			 
 		}else {
 			return null;
 		}

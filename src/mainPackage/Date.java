@@ -1,5 +1,7 @@
 package mainPackage;
 
+import javax.swing.JOptionPane;
+
 public class Date {
 	// Les attributes
 	private int jour;
@@ -10,17 +12,28 @@ public class Date {
 	// Les constructeurs
 	public Date(int jour, int mois, int annee) {
 		super();
-		this.jour = jour;
+		this.jour =jour;
 		this.mois = mois;
 		this.annee = annee;
+		
 	}
 	public Date() {
 		super();
-		this.jour = 1;
-		this.mois = 1;
-		this.annee = 2000;
+//		this.jour = 1;
+//		this.mois = 1;
+//		this.annee = 2000;
 	}
-	
+	public boolean validDate() {
+//		int validation;
+		if((getJour()<=30 && getJour()>=1) && (getMois()<=12 && getMois() >=1 ) && (getAnnee()>=1920)) {
+			return true;
+		}else {
+			
+//			validation =-1;
+			return false;
+		}
+		
+	}
 	// Getters & Setters
 	public int getJour() {
 		return jour;

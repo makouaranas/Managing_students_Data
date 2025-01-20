@@ -150,11 +150,15 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	@Override
 	public void getAccueil() {
 		
+		Color Light = new Color(0xEEEEEE);
+		Color semiLight = new Color(0x76ABAE);
+		Color dark = new Color(0x222831);
+		Color semidark = new Color(0x31363F);
 		
-		Color sideMenuColor = new Color(0xB6B6B6);
+		Color sideMenuColor = semiLight;
 		JPanel homePanel = new JPanel(new BorderLayout());
 		JPanel sideMenu = new JPanel(new BorderLayout());
-//		JPanel dashboardPanel = new JPanel();
+
 		JPanel emptyPanel = new JPanel();
 		JPanel optionSideMenu = new JPanel(new GridLayout(8, 1));
 		emptyPanel.setBackground(sideMenuColor);
@@ -235,7 +239,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 		dashboardPanel.add(topPanel, BorderLayout.NORTH);
 //		dashboardPanel.add(searchButton);
 		dashboardPanel.add(choix);
-		//dashboardPanel.add(table);
+		
 		
 		searchButton.addActionListener(new ActionListener() {
 			
@@ -266,9 +270,8 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 				tablePanel = new JPanel(new BorderLayout());
 				ArrayList<Students> students;
 				students = database.rechercherEtudiant(choose,value);
-				// Convert ArrayList<Student> to a 2D array
-				Object[][] data = new Object[students.size()][7];
 				
+				Object[][] data = new Object[students.size()][7];
 				for (int i = 0; i < students.size(); i++) {
 				    Students student = students.get(i);
 				    data[i][0] = student.getCne();
@@ -312,7 +315,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 		add(dashboardPanel);
 		
 		sideMenu.setBackground(sideMenuColor);
-		dashboardPanel.setBackground(new Color(0xCECECE));
+		dashboardPanel.setBackground(Light);
 		optionSideMenu.setBackground(sideMenuColor);
 		sideMenu.setPreferredSize(new Dimension(300, 700));
 
@@ -650,7 +653,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	        	 Date d = new Date();
 	        	 
 	        	 
-	        	 if(!codeMassarField.getText().isBlank() && !prenomField.getText().isBlank()&& !nomField.getText().isBlank() && !emailField.getText().isBlank()  && d.parseDate(dateNaissanceField.getText()).validDate() ==0) {
+	        	 if(!codeMassarField.getText().isBlank() && !prenomField.getText().isBlank()&& !nomField.getText().isBlank() && !emailField.getText().isBlank()  && d.parseDate(dateNaissanceField.getText()).validDate()) {
 	        	Students  addedStudent = new Students(
 	        			codeMassarField.getText(),
 	        			prenomField.getText(),
@@ -660,7 +663,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	        			);
 	            database.ajouterEtudiant(addedStudent);
 	            JOptionPane.showConfirmDialog(null, "L'etudient est ajoute sucessuf");
-	        	 }else if( d.validDate() ==-1) {
+	        	 }else if( !d.validDate()) {
 	        		 JOptionPane.showMessageDialog(null, "Le date est incorrect \n \n essay d'utilise la forma suivant jj/nn/aaaa.");
 	        		
 	        	 }else{
@@ -812,20 +815,25 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
           
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				Date date = new Date();
 		
 				int response = JOptionPane.showConfirmDialog(InterfaceGraphique.this, "Voulez-vous sauvegarder votre modification ?", "Confirmation", JOptionPane.YES_NO_CANCEL_OPTION);
 				if (response == JOptionPane.YES_OPTION) {
-					newCne = cneInput.getText();
-					newFirstName = firstNameInput.getText();
-					newLastName = lastNameInput.getText();
-					newBirthdate = birthdayInput.getText();
-					newEmail = emailInput.getText();
-					database.modifierEtudiant(student.getCne(), new Students(newCne, newFirstName, newLastName,bufferDate.parseDate(newBirthdate), newEmail));
-					cneInput.setEnabled(false);
-				    firstNameInput.setEnabled(false);
-				    lastNameInput.setEnabled(false);
-				    birthdayInput.setEnabled(false);
-				    emailInput.setEnabled(false);	
+					if (!cneInput.getText().isBlank() && !firstNameInput.getText().isBlank() && !lastNameInput.getText().isBlank() && date.parseDate(birthdayInput.getText()).validDate()&&!emailInput.getText().isBlank()) {
+						newCne = cneInput.getText();
+						newFirstName = firstNameInput.getText();
+						newLastName = lastNameInput.getText();
+						newBirthdate = birthdayInput.getText();
+						newEmail = emailInput.getText();
+						database.modifierEtudiant(student.getCne(), new Students(newCne, newFirstName, newLastName,bufferDate.parseDate(newBirthdate), newEmail));
+						cneInput.setEnabled(false);
+					    firstNameInput.setEnabled(false);
+					    lastNameInput.setEnabled(false);
+					    birthdayInput.setEnabled(false);
+					    emailInput.setEnabled(false);
+					}else {
+						JOptionPane.showMessageDialog(null, "Les données que vous avez saisies ne sont pas valides.");
+					}
 				} else if (response == JOptionPane.NO_OPTION) {
 					cneInput.setText(student.getCne());
 				    firstNameInput.setText(student.getFirstName());

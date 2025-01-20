@@ -5,12 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-
 import java.awt.Font;
-
-
-import java.awt.Font;
-
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.Image;
@@ -20,40 +15,15 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.event.MouseListener;
+import java.awt.print.PrinterException;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.Insets;
-import java.awt.Label;
-import java.awt.PageAttributes.OrientationRequestedType;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.TextArea;
-import java.awt.TextField;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.geom.RoundRectangle2D;
-import java.awt.print.PrinterException;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-
-
-
-import javax.swing.BorderFactory;
-
-
 import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttribute;
 import javax.print.attribute.PrintRequestAttributeSet;
-
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -62,18 +32,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
 import javax.swing.JRadioButton;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.AbstractBorder;
-
 import javax.swing.table.DefaultTableModel;
-
 import javax.swing.table.JTableHeader;
 
 
@@ -81,20 +45,14 @@ import javax.swing.table.JTableHeader;
 
 public class InterfaceGraphique extends JFrame implements userGraphic{
 	
-
 	String newCne;
 	String newFirstName;
 	String newLastName;
 	String newBirthdate;
 	String newEmail;
 	
-	
 	private StudentsDatabase database;
 	private ImageIcon appLogo;
-
-	
-
-
 
 	public InterfaceGraphique() {
 		//Initiating database-------------------------------------------------
@@ -103,50 +61,15 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 		this.setTitle(" Gestion des Étudiants (beta)");
 		appLogo = new ImageIcon("resources/AppLogo.png");
 		this.setIconImage(appLogo.getImage());
-		this.setSize(1000,700);
+		this.setSize(1100,700);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 	}
+	
 	JButton returnButton = new JButton("<--");
-	/*----------------------------Cette class permet de cree rounde border------------------------------------*/
+	ImageIcon returnIcon = new ImageIcon("resources/back.png");
+	Image scaledReturnIcon = returnIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 	
-
-	class RoundedBorder extends AbstractBorder {
-	    /**
-		 * 
-		 */
-		private static final long serialVersionUID = -5260830134994952220L;
-		private int radius;
-
-	    public RoundedBorder(int radius) {
-	        this.radius = radius;
-	        
-	    }
-
-	    public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-	        Graphics2D g2d = (Graphics2D) g.create();
-	        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-	        g2d.setColor(c.getForeground());
-	        g2d.draw(new RoundRectangle2D.Double(x, y, width - 1, height - 1, radius, radius));
-	        g2d.dispose();
-	        g2d.setColor(c.getForeground());
-	   
-	    }
-
-	    @Override
-	    public Insets getBorderInsets(Component c) {
-	        return new Insets(this.radius + 1, this.radius + 1, this.radius + 1, this.radius + 1);
-	    }
-
-	    @Override
-	    public Insets getBorderInsets(Component c, Insets insets) {
-	        insets.left = insets.right = insets.top = insets.bottom = this.radius + 1;
-	        return insets;
-	    }
-	    
-	}
-	
-	/*------------------------------------------------------------------*/
 	@Override
 	public void getAccueil() {
 		
@@ -199,50 +122,64 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 		groupRadio.add(choixNom);
 		groupRadio.add(choixPrenom);
 		groupRadio.add(choixEmail);
-		
-		String[] columnNames = {"Code Massar", "Penom", "Nom", "Date de Naissance", "E-mail","Remove","Edite"};
-		
-		
+		String[] columnNames = {"Code Massar", "Penom", "Nom", "Date de Naissance", "E-mail","Remove","Edite"};		
 		searchButton.setFocusable(false);
 		searchButton.setOpaque(false);
 		searchButton.setBackground(new Color(0x4c4c4c));
 		searchButton.setBorder(new RoundedBorder(18));
 		searchButton.setPreferredSize(new Dimension(80,40));
-		
-		
-		returnButton.setFocusable(false);
-		returnButton.setBackground(new Color(0x4c4c4c));
-		returnButton.setBorder(new RoundedBorder(20));
-		returnButton.setOpaque(false);
-		returnButton.setPreferredSize(new Dimension(40,30));
-		returnButton.setVisible(false);
-		returnButton.addActionListener(new ActionListener() {
+//		returnButton.setFocusable(false);
+//		returnButton.setBackground(new Color(0x4c4c4c));
+//		returnButton.setBorder(new RoundedBorder(20));
+//		returnButton.setOpaque(false);
+//		returnButton.setPreferredSize(new Dimension(40,30));
+//		returnButton.setVisible(false);
+		JLabel backIcon =new JLabel(new ImageIcon(scaledReturnIcon));
+
+		backIcon.addMouseListener(new MouseListener() {
 			
 			@Override
-			public void actionPerformed(ActionEvent e) {
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
 				// TODO Auto-generated method stub
 				getAccueil();
 				
-				
 			}
 		});
-		
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BoxLayout(topPanel,BoxLayout.Y_AXIS));
-		
 		JPanel searchPanel =new JPanel(new FlowLayout(FlowLayout.CENTER,40,10));
-		searchPanel.add(returnButton);
+		searchPanel.add(backIcon);
 		searchPanel.add(searchBar);
 		searchPanel.add(searchButton);
 		topPanel.add(searchPanel);
 		topPanel.add(choix);
 		dashboardPanel.add(topPanel, BorderLayout.NORTH);
-//		dashboardPanel.add(searchButton);
 		dashboardPanel.add(choix);
-		
-		
 		searchButton.addActionListener(new ActionListener() {
-			
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -264,9 +201,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 				}else {
 					JOptionPane.showMessageDialog(null, "Selectione un choix");
 					return;
-				}
-				/*#########################################################################*/
-			       
+				}			       
 				tablePanel = new JPanel(new BorderLayout());
 				ArrayList<Students> students;
 				students = database.rechercherEtudiant(choose,value);
@@ -281,44 +216,31 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 				    data[i][4] = student.getEmail();
 				    data[i][5] = "Remove";
 				    data[i][6] = "EDITE";
+				    
 				}
 
-    // Create the table with the data and column names
-				
 				DefaultTableModel model =new DefaultTableModel(data,columnNames) {
 					@Override
 					public boolean isCellEditable(int row, int column) {
 						// TODO Auto-generated method stub
 						return column == 5 || column == 6;
-						
 					}
 				};
-				
 				JTable table = new JTable(model);
 				JScrollPane scrollPane = new JScrollPane(table);
 				tablePanel.removeAll();
 				tablePanel.add(scrollPane, BorderLayout.CENTER);
-				table.setAutoCreateRowSorter(true); // Enable row sorting
-				// Add the scroll pane to the frame
-
-
+				table.setAutoCreateRowSorter(true);
 				dashboardPanel.add(tablePanel,BorderLayout.SOUTH);
 				dashboardPanel.revalidate();
-				dashboardPanel.repaint();
-					
-		
-
-				/*############################################################################*/
-			       	
+				dashboardPanel.repaint();			       	
 		}});
 
 		add(dashboardPanel);
-		
 		sideMenu.setBackground(sideMenuColor);
 		dashboardPanel.setBackground(Light);
 		optionSideMenu.setBackground(sideMenuColor);
 		sideMenu.setPreferredSize(new Dimension(300, 700));
-
 		ImageIcon logoIcon = new ImageIcon("resources/logocompressed.png");
 		Image scaledLogo = logoIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 		JLabel logoLabel = new JLabel(new ImageIcon(scaledLogo));
@@ -336,7 +258,6 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 		JLabel addStudentOption = new JLabel("Ajouter Etudiant", new ImageIcon(scaledAddIcon), SwingConstants.CENTER);
 		JLabel showStudentsOption = new JLabel("Affichier Etudiant", new ImageIcon(scaledShowIcon), SwingConstants.CENTER);
 		
-
 		homeOption.setBackground(new Color(0xE9E9E9));
 		homeOption.setOpaque(true);
 		
@@ -410,9 +331,6 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 
 	@Override
 	public void getListEtudiants() {
-
-
-
 		// TODO Auto-generated method stub
 
 		String headers[] = {"Code Massar","Nom","Prénom","Date de naissance","E-mail"}; 
@@ -492,8 +410,6 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 		});
 		
 		northPanel.add(printiIconLabel,BorderLayout.EAST);
-		
-		
 		mainPanel.add(northPanel,BorderLayout.NORTH);
 		mainPanel.add(centerPanel,BorderLayout.CENTER);
 		this.setContentPane(mainPanel);
@@ -506,8 +422,6 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	    JTextField codeMassarField, prenomField, nomField, dateNaissanceField, emailField;
 	    JButton submitButton;
 	    JButton backButton;
-	    
-
 	   
 	    JPanel panel = new JPanel(new GridBagLayout());
 	    panel.setBackground(new Color(240, 240, 240)); 
@@ -650,9 +564,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	    submitButton.addActionListener(new ActionListener() {
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
-	        	 Date d = new Date();
-	        	 
-	        	 
+	        	 Date d = new Date();	        	 
 	        	 if(!codeMassarField.getText().isBlank() && !prenomField.getText().isBlank()&& !nomField.getText().isBlank() && !emailField.getText().isBlank()  && d.parseDate(dateNaissanceField.getText()).validDate()) {
 	        	Students  addedStudent = new Students(
 	        			codeMassarField.getText(),
@@ -679,12 +591,9 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	    this.repaint();
 	    this.setVisible(true);
 	}
-
-
 	@Override
 	public void getModifierEtudiant(Students student) {
 
-		
 		Date bufferDate = new Date();
 		JButton save = new JButton("Enregistrer");
 		JButton cancel = new JButton("Annuler");
@@ -757,25 +666,19 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 				getAccueil();
             }
 		});
-		
 		northPanel.add(goBackIconLabel);
-	    
 	    ImageIcon editIcon = new ImageIcon("resources/edit-button.png");
 		Image scaledEditIcon = editIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-		
 		JLabel editCneIconLabel = new JLabel(new ImageIcon(scaledEditIcon));
 		JLabel editFirstNameIconLabel = new JLabel(new ImageIcon(scaledEditIcon));
 		JLabel editLastNameIconLabel = new JLabel(new ImageIcon(scaledEditIcon));
 		JLabel editBirthdayIconLabel = new JLabel(new ImageIcon(scaledEditIcon));
 		JLabel editEmailIconLabel = new JLabel(new ImageIcon(scaledEditIcon));
-		
-
 	    cneInput.setEnabled(false);
 	    firstNameInput.setEnabled(false);
 	    lastNameInput.setEnabled(false);
 	    birthdayInput.setEnabled(false);
 	    emailInput.setEnabled(false);
-	    
 		editCneIconLabel.addMouseListener(new MouseAdapter() {
 			@Override
 	            public void mousePressed(MouseEvent e) {
@@ -859,8 +762,6 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 				getAccueil();
 			}
         });
-		
-		
 	    labelsPanel.add(cneLabel);
 	    labelsPanel.add(firstNameLabel);
 	    labelsPanel.add(lastNameLabel);

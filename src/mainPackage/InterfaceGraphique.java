@@ -131,7 +131,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
         }
 
         // Update the table
-        tablePanel.removeAll(); // Clear the table panel
+        tablePanel.removeAll(); 
         customTable = new CustomTable(columnNames, data, new int[]{5, 6}, this::removeStudent, this::modifyStudent);
         JScrollPane scrollPane = new JScrollPane(customTable);
         tablePanel.add(scrollPane, BorderLayout.CENTER);
@@ -279,14 +279,8 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 					return;
 				}
 				
-				/*----------------------------------------------------------------------*/
-				
-				/*-----------------------------------------------------------------------*/
-				
-				
 				ArrayList<Students> students;
-				
-				
+								
 				students = database.rechercherEtudiant(choose,value);
 			
 				data = new Object[students.size()][7];
@@ -297,8 +291,8 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 				    data[i][2] = student.getLastName();
 				    data[i][3] = student.getDate();
 				    data[i][4] = student.getEmail();
-				    data[i][5] = "Remove";
-				    data[i][6] = "EDITE";
+				    data[i][5] = " Remove";
+				    data[i][6] = " EDITE";
 				    
 				    
 				}
@@ -314,12 +308,9 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 			});
 		
 		customTable = new CustomTable(columnNames, data, new int[]{5, 6}, this::removeStudent, this::modifyStudent);
-		
-//		JTable table = new JTable(model);
 		JScrollPane scrollPane = new JScrollPane(customTable);
 		tablePanel.removeAll();
 		tablePanel.add(scrollPane, BorderLayout.CENTER);
-//		table.setAutoCreateRowSorter(true);
 		dashboardPanel.add(tablePanel,BorderLayout.SOUTH);
 		dashboardPanel.revalidate();
 		dashboardPanel.repaint();	
@@ -514,12 +505,9 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	    panel.setBackground(new Color(240, 240, 240)); 
 	    GridBagConstraints gbc = new GridBagConstraints();
 	    gbc.insets = new Insets(10, 10, 10, 10);
-	    // Load the image for the back button
 	    ImageIcon backIcon = new ImageIcon("resources/back.png"); 
 	    Image backImage = backIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH); 
 	    backIcon = new ImageIcon(backImage); 
-
-	    // Back button with image and styling
 	    backButton = new JButton(backIcon); 
 	    backButton.setText(""); 
 	    backButton.setOpaque(false);
@@ -528,7 +516,6 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	    backButton.setForeground(Color.WHITE); 
 	    backButton.setFocusPainted(false); 
 	    backButton.setFont(new Font("Segoe UI", Font.BOLD, 14)); 
-	    
 	    backButton.addActionListener(new ActionListener() {
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
@@ -600,7 +587,6 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	    gbc.anchor = GridBagConstraints.WEST;
 	    dateNaissanceField = new JTextField("jj/mm/aaaa",20);
 	    dateNaissanceField.addFocusListener(new FocusListener() {
-			
 			@Override
 			public void focusLost(FocusEvent e) {
 				 if (dateNaissanceField.getText().equals("jj/mm/aaaa")) {
@@ -622,14 +608,12 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	    dateNaissanceField.setFont(largerFont);
 	    dateNaissanceField.setBorder(new RoundedBorder(10)); 
 	    panel.add(dateNaissanceField, gbc);
-
 	    gbc.gridx = 0;
 	    gbc.gridy++;
 	    gbc.anchor = GridBagConstraints.EAST;
 	    JLabel emailLabel = new JLabel("E-mail:");
 	    emailLabel.setFont(largerFont);
 	    panel.add(emailLabel, gbc);
-
 	    gbc.gridx = 1;
 	    gbc.anchor = GridBagConstraints.WEST;
 	    emailField = new JTextField(20);
@@ -663,8 +647,6 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	        			emailField.getText()
 	        			);
 	        	if(!database.isStudentExist(addedStudent.getCne())) {
-        			
-        		
 	        	int response =JOptionPane.showConfirmDialog(null, "are you sure you want to add "+nomField.getText()+" to list");
 	        	if(response == JOptionPane.YES_OPTION) {
 	        		
@@ -695,17 +677,13 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	        	
 	        	 }else if( !d.validDate()) {
 	    
-	        		 JOptionPane.showMessageDialog(null, "Le date est incorrect \n \n essay d'utilise la forma suivant jj/nn/aaaa.");
-	        		
-	        		
+	        		 JOptionPane.showMessageDialog(null, "Le date est incorrect \n \n essay d'utilise la forma suivant jj/nn/aaaa.");	        
 	        	 }else{
 	        		 
 	        		 JOptionPane.showMessageDialog(null, "SVP remplie tout les informations");
 	        	 }
 	        }
 	    });
-
-	    // Add the panel to the frame
 	    add(panel, BorderLayout.CENTER);
 	    this.setContentPane(panel);
 	    this.validate();

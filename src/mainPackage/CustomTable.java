@@ -43,7 +43,6 @@ public class CustomTable extends JPanel {
 
 			@Override
             public boolean isCellEditable(int row, int column) {
-                // Make only the action columns editable
                 for (int index : actionColumnIndices) {
                     if (column == index) {
                         return true;
@@ -61,13 +60,11 @@ public class CustomTable extends JPanel {
         tableHeader.setFont(headerFont.deriveFont(Font.BOLD));
         table.updateUI();
         
-        // Set custom renderer and editor for the action columns
         for (int index : actionColumnIndices) {
             table.getColumnModel().getColumn(index).setCellRenderer(new LabelRenderer());
             table.getColumnModel().getColumn(index).setCellEditor(new LabelEditor());
         }
         
-        // Add the table to a scroll pane
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setPreferredSize(new Dimension(800,400));
         scrollPane.setAutoscrolls(true);
@@ -83,7 +80,7 @@ public class CustomTable extends JPanel {
      */
     private static class LabelRenderer extends JLabel implements TableCellRenderer {
         public LabelRenderer() {
-            setOpaque(true); // Make the label opaque to ensure background color is visible
+            setOpaque(true); 
         }
 
         @Override
@@ -114,7 +111,7 @@ public class CustomTable extends JPanel {
 
                     // "Remove" action
                     if (column == 5) { 
-                        String cne = (String) table.getValueAt(row, 0); // Get the CNE from the first column
+                        String cne = (String) table.getValueAt(row, 0); 
                         if (removeAction != null) {
                             removeAction.accept(cne); 
                         }
@@ -137,20 +134,20 @@ public class CustomTable extends JPanel {
                         Students student = new Students(cne, firstName, lastName, date, email);
 
                         if (modifyAction != null) {
-                            modifyAction.accept(student); // Call the modify action function
+                            modifyAction.accept(student);
                         }
                     }
 
-                    fireEditingStopped(); // Stop editing after the click
+                    fireEditingStopped(); 
                 }
             });
         }
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            label.setText((value == null) ? "" : value.toString()); // Set the label text
-            label.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground()); // Set background color
-            label.setForeground(isSelected ? table.getSelectionForeground() : table.getForeground()); // Set text color
+            label.setText((value == null) ? "" : value.toString()); 
+            label.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground()); 
+            label.setForeground(isSelected ? table.getSelectionForeground() : table.getForeground());
             return label;
         }
 

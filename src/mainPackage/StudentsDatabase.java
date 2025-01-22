@@ -98,9 +98,14 @@ public class StudentsDatabase  implements DataBase {
 		
 		if(isStudentExist(codeMassar)) {
 			try {
+				int respon = JOptionPane.showConfirmDialog(null,"Are you sure you want to remove the student?" );
+				if(respon == JOptionPane.YES_OPTION) {
 				PreparedStatement statement = myConnection.prepareStatement(removeQuery);
 				statement.setString(1, codeMassar);
 				statement.executeUpdate();
+				}else {
+					JOptionPane.showMessageDialog(null, "The operation canced ");
+				}
 			} catch (SQLException e) {
 	
 				e.printStackTrace();

@@ -84,7 +84,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 
 	public InterfaceGraphique() {
 		//Initiating database-------------------------------------------------
-		database = new StudentsDatabase("students_database");
+		database = new StudentsDatabase("students");
 		//--------------------------------------------------------------------
 		this.setTitle(" Gestion des Étudiants (beta)");
 		appLogo = new ImageIcon("resources/logo-USMBA.png");
@@ -620,7 +620,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	    gbc.gridx = 1;
 	    gbc.anchor = GridBagConstraints.WEST;
 	    dateNaissanceField = new JTextField("jj/mm/aaaa",20);
-<<<<<<< HEAD
+
 	    dateNaissanceField.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {
@@ -639,7 +639,8 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	                }
 				
 			}
-=======
+	    });
+
 	    dateNaissanceField.setForeground(placeHolder);
 	    dateNaissanceField.addMouseListener(new MouseAdapter() {
 	    	@Override
@@ -657,7 +658,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	    			dateNaissanceField.setForeground(placeHolder);
 	    		}
 	    	}
->>>>>>> c078218eda4006c68a9bcbe3eb39354fdf959f1c
+
 		});
 	    dateNaissanceField.setFont(largerFont);
 	    dateNaissanceField.setBorder(new RoundedBorder(10)); 

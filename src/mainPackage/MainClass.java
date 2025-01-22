@@ -11,10 +11,10 @@ public class MainClass{
 				
 		
 			InterfaceGraphique gui = new InterfaceGraphique();
-//				gui.getAccueil();		
+			gui.getAccueil();		
 //				gui.getAjouterEtudiant();
 		
-		gui.getModifierEtudiant(new Students("Y131013551", "Ayoub", "EZZAOUYAH", new Date(), "exemple@domain.com"));
+//		gui.getModifierEtudiant(new Students("Y131013551", "Ayoub", "EZZAOUYAH", new Date(), "exemple@domain.com"));
 						
 //				StudentsDatabase stdb= new StudentsDatabase("students_database");
 //				Students student = new  Students("P142063053", "ANAS", "MAKOUAR", new Date(), "anasmakouar@gmail.com");

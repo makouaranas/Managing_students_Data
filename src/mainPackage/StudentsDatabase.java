@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 
 public class StudentsDatabase  implements DataBase {
 	// les atributes
@@ -28,6 +30,7 @@ public class StudentsDatabase  implements DataBase {
         try {
             Class.forName("com.mysql.jdbc.Driver");
         } catch (ClassNotFoundException e) {
+        	JOptionPane.showConfirmDialog(null, "Failed to connect to database..." );
             System.out.println("Thre is a problem with the Driver ....");
             throw new RuntimeException(e);
         }
@@ -37,6 +40,7 @@ public class StudentsDatabase  implements DataBase {
             System.out.println("Connected to database...");
         } catch (SQLException e) {
             System.out.println("Failed to connect to database...");
+            JOptionPane.showConfirmDialog(null, "Failed to connect to database..." );
             throw new RuntimeException(e);
         }
 	}
@@ -60,6 +64,7 @@ public class StudentsDatabase  implements DataBase {
 				e.printStackTrace();
 			}	
 		}else {
+			JOptionPane.showMessageDialog(null,"The student "+etudiant.getLastName()+" "+etudiant.getFirstName()+" already exist in the data base with CNE: "+etudiant.getCne());
 			System.err.println("The student "+etudiant.getLastName()+" "+etudiant.getFirstName()+" already exist in the data base with CNE: "+etudiant.getCne());
 		}
 		
@@ -101,6 +106,7 @@ public class StudentsDatabase  implements DataBase {
 				e.printStackTrace();
 			}	
 		}else {
+			JOptionPane.showMessageDialog(null, "The student already exist in the data base with CNE: "+codeMassar);
 			System.err.println("The student already exist in the data base with CNE: "+codeMassar);
 		}
 		
@@ -161,11 +167,13 @@ public class StudentsDatabase  implements DataBase {
 				resultset.close();
 	            statement0.close();
 			} catch (SQLException e) {
+				 JOptionPane.showMessageDialog(null, "N'exist aucun etudent avec"+choix+"= "+info+", essay a" );
 				e.printStackTrace();
 			}
 			
 			 return student;
 		}else {
+			JOptionPane.showConfirmDialog(null, "Vriefie le choix dans le program" );
 			return null;
 		}
 	}

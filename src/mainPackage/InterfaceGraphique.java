@@ -163,6 +163,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 			
 
 		JTextField searchBar = new JTextField();
+	
 		searchBar.setBorder(new RoundedBorder(10));
 		searchBar.setFont(new Font("sans-serif", Font.BOLD,20));
 		searchBar.setPreferredSize(new Dimension(500,50));
@@ -257,6 +258,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if(!searchBar.getText().isBlank()) {
 				backIcon.setVisible(true);
 				searchBar.setVisible(false);
 				searchButton.setVisible(false);
@@ -283,7 +285,10 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 				
 				
 				ArrayList<Students> students;
+				
+				
 				students = database.rechercherEtudiant(choose,value);
+			
 				data = new Object[students.size()][7];
 				for (int i = 0; i < students.size(); i++) {
 				    Students student = students.get(i);
@@ -295,8 +300,15 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 				    data[i][5] = "Remove";
 				    data[i][6] = "EDITE";
 				    
+				    
 				}
-					 refreshTable();      	
+				refreshTable();  
+				 revalidate();
+				 repaint();
+				}else {
+					JOptionPane.showMessageDialog(null, "Remplaiez la bar de recherch ");
+				}
+					 
 		}
 	    
 			});
@@ -525,18 +537,18 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	    });
 	    
 	    
-//	    gbc.gridx = 50;
-//	    gbc.gridy = 0;
-//	    gbc.gridwidth = 1;
-//	    gbc.anchor = GridBagConstraints.WEST;
-//	    panel.add(backButton, gbc);
+	    gbc.gridx = 1;
+	    gbc.gridy = 0;
+	    gbc.gridwidth = 1;
+	    gbc.anchor = GridBagConstraints.WEST;
+	    panel.add(backButton, gbc);
 
 	  
 	    Font largerFont = new Font("Segoe UI", Font.PLAIN, 16);
 
 	    
-	    gbc.gridwidth = 1;
-	    gbc.gridy =0;
+	    gbc.gridx =0;
+	    gbc.gridy++;
 	    gbc.anchor = GridBagConstraints.EAST;
 	    JLabel codeMassarLabel = new JLabel("Code Massar:");
 	    codeMassarLabel.setFont(largerFont);
@@ -650,11 +662,16 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	        			d.parseDate(dateNaissanceField.getText()),
 	        			emailField.getText()
 	        			);
+	        	if(!database.isStudentExist(addedStudent.getCne())) {
+        			
+        		
 	        	int response =JOptionPane.showConfirmDialog(null, "are you sure you want to add "+nomField.getText()+" to list");
 	        	if(response == JOptionPane.YES_OPTION) {
+	        		
 	            database.ajouterEtudiant(addedStudent);
 	           
 	            JOptionPane.showMessageDialog(null,"L'etudent a est ete ajoute a la list");
+	        	
 	        	}else {
 	        		dialog= new JOptionPane("L'operation a ete annule",JOptionPane.INFORMATION_MESSAGE,JOptionPane.DEFAULT_OPTION).createDialog(null,"Auto-Close Dialog");
 	        		
@@ -671,6 +688,9 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	        		timer.start();
 	        		dialog.setVisible(true);
 	        		
+	        	}
+	        	}else {
+	        		JOptionPane.showMessageDialog(null, "L'etudent est deja exist dans database");
 	        	}
 	        	
 	        	 }else if( !d.validDate()) {

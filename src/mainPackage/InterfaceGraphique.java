@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.Image;
@@ -54,11 +55,19 @@ import javax.swing.table.JTableHeader;
 
 public class InterfaceGraphique extends JFrame implements userGraphic{
 	
-	String newCne;
-	String newFirstName;
-	String newLastName;
-	String newBirthdate;
-	String newEmail;
+
+	private String newCne;
+	private String newFirstName;
+	private String newLastName;
+	private String newBirthdate;
+	private String newEmail;
+	
+	private Color Light = new Color(0xEEEEEE);
+	private Color semiLight = new Color(0x76ABAE);
+	private Color dark = new Color(0x222831);
+	private Color semidark = new Color(0x878484);
+	private Color placeHolder = new Color(0xB0AFAF);
+	
 	JPanel topPanel = new JPanel(new BorderLayout());
 	JPanel dashboardPanel = new JPanel(new BorderLayout());
 	String choose="";
@@ -75,10 +84,10 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 
 	public InterfaceGraphique() {
 		//Initiating database-------------------------------------------------
-		database = new StudentsDatabase("students");
+		database = new StudentsDatabase("students_database");
 		//--------------------------------------------------------------------
 		this.setTitle(" Gestion des Étudiants (beta)");
-		appLogo = new ImageIcon("resources/AppLogo.png");
+		appLogo = new ImageIcon("resources/logo-USMBA.png");
 		this.setIconImage(appLogo.getImage());
 		this.setSize(1100,700);
 		this.setLocationRelativeTo(null);
@@ -146,12 +155,12 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	@Override
 	public void getAccueil() {
 		
-		Color Light = new Color(0xEEEEEE);
-		Color semiLight = new Color(0x76ABAE);
-		Color dark = new Color(0x222831);
-		Color semidark = new Color(0x31363F);
+//		Color Light = new Color(0xEEEEEE);
+//		Color semiLight = new Color(0x76ABAE);
+//		Color dark = new Color(0x222831);
+//		Color semidark = new Color(0x31363F);
 		
-		Color sideMenuColor = semiLight;
+		Color sideMenuColor = dark;
 		JPanel homePanel = new JPanel(new BorderLayout());
 		JPanel sideMenu = new JPanel(new BorderLayout());
 
@@ -319,23 +328,38 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 		dashboardPanel.setBackground(Light);
 		optionSideMenu.setBackground(sideMenuColor);
 		sideMenu.setPreferredSize(new Dimension(300, 700));
-		ImageIcon logoIcon = new ImageIcon("resources/logocompressed.png");
-		Image scaledLogo = logoIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+
+
+		ImageIcon logoIcon = new ImageIcon("resources/logo-USMBA.png");
+		Image scaledLogo = logoIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+
+//		ImageIcon logoIcon = new ImageIcon("resources/logocompressed.png");
+//		Image scaledLogo = logoIcon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 		JLabel logoLabel = new JLabel(new ImageIcon(scaledLogo));
 		sideMenu.add(logoLabel, BorderLayout.NORTH);
 
-		ImageIcon homeIcon = new ImageIcon("resources/home.png");
-		ImageIcon addIcon = new ImageIcon("resources/add-user.png");
-		ImageIcon showIcon = new ImageIcon("resources/to-do-list.png");
+		ImageIcon homeIconBlack = new ImageIcon("resources/home.png");
+		ImageIcon addIconBlack = new ImageIcon("resources/add-user-black.png");
+		ImageIcon showIconBlack = new ImageIcon("resources/to-do-list-black.png");
 
-		Image scaledHomeIcon = homeIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-		Image scaledAddIcon = addIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-		Image scaledShowIcon = showIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+		Image scaledHomeIconclicked = homeIconBlack.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+		Image scaledAddIconhovered = addIconBlack.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+		Image scaledShowIconhovered = showIconBlack.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+		
+		ImageIcon homeIconWhite = new ImageIcon("resources/home.png");
+		ImageIcon addIconWhite= new ImageIcon("resources/add-user-white.png");
+		ImageIcon showIconWhite = new ImageIcon("resources/to-do-list-white.png");
+
+		Image scaledHomeIcon = homeIconWhite.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+		Image scaledAddIcon = addIconWhite.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+		Image scaledShowIcon = showIconWhite.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
 
 		JLabel homeOption = new JLabel("Accueil", new ImageIcon(scaledHomeIcon), SwingConstants.CENTER);
 		JLabel addStudentOption = new JLabel("Ajouter Etudiant", new ImageIcon(scaledAddIcon), SwingConstants.CENTER);
 		JLabel showStudentsOption = new JLabel("Affichier Etudiant", new ImageIcon(scaledShowIcon), SwingConstants.CENTER);
-		
+				
+
+		homeOption.setBackground(Light);
 		homeOption.setBackground(new Color(0xE9E9E9));
 		homeOption.setOpaque(true);
 		
@@ -343,25 +367,31 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 		addStudentOption.setIconTextGap(25);
 		showStudentsOption.setIconTextGap(25);
 		
+		addStudentOption.setForeground(Light);
+		showStudentsOption.setForeground(Light);
+		
 		addStudentOption.addMouseListener(new MouseAdapter() {
 			 @Override
 	            public void mouseEntered(MouseEvent e) {
-	                addStudentOption.setBackground(new Color(0xE9E9E9));
-	                addStudentOption.setForeground(Color.BLACK);
+	                addStudentOption.setBackground(semiLight);
+	                addStudentOption.setForeground(Color.black);
+	                addStudentOption.setIcon(new ImageIcon(scaledAddIconhovered));
 	                addStudentOption.setOpaque(true);
 	            }
 
 	            @Override
 	            public void mouseExited(MouseEvent e) {
 	            	addStudentOption.setBackground(sideMenuColor);
-	            	addStudentOption.setForeground(Color.BLACK);
+	            	addStudentOption.setForeground(Color.WHITE);
+	                addStudentOption.setIcon(new ImageIcon(scaledAddIcon));
 	            	addStudentOption.setOpaque(true);
 	            }
 	            
 	            @Override
 	            public void mousePressed(MouseEvent e) {
-	            	addStudentOption.setBackground(new Color(0xE9E9E9));
+	            	addStudentOption.setBackground(Light);
 	            	addStudentOption.setForeground(Color.BLACK);
+	                addStudentOption.setIcon(new ImageIcon(scaledAddIconhovered));
 	            	addStudentOption.setOpaque(true);
 	            	getAjouterEtudiant();
 	            }
@@ -371,7 +401,8 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 			
 			 @Override
 	            public void mouseEntered(MouseEvent e) {
-					 showStudentsOption.setBackground(new Color(0xE9E9E9));
+					 showStudentsOption.setBackground(semiLight);
+					 showStudentsOption.setIcon(new ImageIcon(scaledShowIconhovered));
 					 showStudentsOption.setForeground(Color.BLACK);
 					 showStudentsOption.setOpaque(true);
 		        }
@@ -379,14 +410,16 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	            @Override
 	            public void mouseExited(MouseEvent e) {
 	            	showStudentsOption.setBackground(sideMenuColor);
-	            	showStudentsOption.setForeground(Color.BLACK);
+					 showStudentsOption.setIcon(new ImageIcon(scaledShowIcon));
+	            	showStudentsOption.setForeground(Color.WHITE);
 	            	showStudentsOption.setOpaque(true);
 	            }
 	            
 	            @Override
 	            public void mousePressed(MouseEvent e) {
-	            	showStudentsOption.setBackground(new Color(0xE9E9E9));
+	            	showStudentsOption.setBackground(Light);
 	            	showStudentsOption.setForeground(Color.BLACK);
+					 showStudentsOption.setIcon(new ImageIcon(scaledShowIconhovered));
 	            	showStudentsOption.setOpaque(true);
 	            	getListEtudiants();
 	            }
@@ -417,6 +450,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	    JPanel northPanel = new JPanel(new BorderLayout());
 	    
 	    northPanel.setPreferredSize(new Dimension(800,50));
+	    northPanel.setBackground(Light);
 	    
 	    ArrayList<Students> rowData =  database.afficherEtudiants();
 	    int rowDataSize = rowData.size();
@@ -437,8 +471,8 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	    };
 	    
 	    table.getTableHeader().setOpaque(false);
-	    table.getTableHeader().setBackground(new Color(0x181B29));
-	    table.getTableHeader().setForeground(new Color(0xFFFFFF));
+	    table.getTableHeader().setBackground(semiLight);
+	    table.getTableHeader().setForeground(dark);
 	    
 	    table.getTableHeader().setReorderingAllowed(false);
 	    
@@ -586,6 +620,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	    gbc.gridx = 1;
 	    gbc.anchor = GridBagConstraints.WEST;
 	    dateNaissanceField = new JTextField("jj/mm/aaaa",20);
+<<<<<<< HEAD
 	    dateNaissanceField.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent e) {
@@ -604,6 +639,25 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	                }
 				
 			}
+=======
+	    dateNaissanceField.setForeground(placeHolder);
+	    dateNaissanceField.addMouseListener(new MouseAdapter() {
+	    	@Override
+	    	public void mousePressed(MouseEvent e) {
+	    		if (dateNaissanceField.getText().equals("jj/mm/aaaa")) {
+	    			dateNaissanceField.setText("");
+	    			dateNaissanceField.setForeground(dark);
+	    		}
+	    	}
+	    	
+	    	@Override
+	    	public void mouseExited(MouseEvent e) {
+	    		if (dateNaissanceField.getText().isBlank()) {
+	    			dateNaissanceField.setText("jj/mm/aaaa");
+	    			dateNaissanceField.setForeground(placeHolder);
+	    		}
+	    	}
+>>>>>>> c078218eda4006c68a9bcbe3eb39354fdf959f1c
 		});
 	    dateNaissanceField.setFont(largerFont);
 	    dateNaissanceField.setBorder(new RoundedBorder(10)); 
@@ -697,6 +751,12 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 		JButton save = new JButton("Enregistrer");
 		JButton cancel = new JButton("Annuler");
 	
+		save.setBackground(Light);
+		save.setForeground(dark);
+		
+		cancel.setBackground(Light);
+		cancel.setForeground(dark);
+		
 		save.setBorder(new RoundedBorder(10));
 		cancel.setBorder(new RoundedBorder(10));
 		

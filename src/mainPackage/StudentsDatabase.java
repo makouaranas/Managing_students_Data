@@ -98,20 +98,20 @@ public class StudentsDatabase  implements DataBase {
 		
 		if(isStudentExist(codeMassar)) {
 			try {
-				int respon = JOptionPane.showConfirmDialog(null,"Are you sure you want to remove the student?" );
+				int respon = JOptionPane.showConfirmDialog(null,"Êtes-vous sûr de vouloir supprimer l'étudiant ?" );
 				if(respon == JOptionPane.YES_OPTION) {
 				PreparedStatement statement = myConnection.prepareStatement(removeQuery);
 				statement.setString(1, codeMassar);
 				statement.executeUpdate();
 				}else {
-					JOptionPane.showMessageDialog(null, "The operation canced ");
+					JOptionPane.showMessageDialog(null, "L'opération a été annulée ");
 				}
 			} catch (SQLException e) {
 	
 				e.printStackTrace();
 			}	
 		}else {
-			JOptionPane.showMessageDialog(null, "The student already exist in the data base with CNE: "+codeMassar);
+			JOptionPane.showMessageDialog(null, "L'étudiant existe déjà dans la base de données avec le CNE : "+codeMassar);
 			System.err.println("The student already exist in the data base with CNE: "+codeMassar);
 		}
 		
@@ -172,7 +172,7 @@ public class StudentsDatabase  implements DataBase {
 				resultset.close();
 	            statement0.close();
 			} catch (SQLException e) {
-				 JOptionPane.showMessageDialog(null, "N'exist aucun etudent avec"+choix+"= "+info+", essay a" );
+				 JOptionPane.showMessageDialog(null, "Il n'existe aucun étudiant avec ce"+choix+"= "+info+", " );
 				e.printStackTrace();
 			}
 			

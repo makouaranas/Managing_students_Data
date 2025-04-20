@@ -45,10 +45,7 @@ import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 import javax.swing.table.JTableHeader;
-
-
-
-
+import javax.swing.text.Caret;
 
 
 
@@ -84,14 +81,15 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 
 	public InterfaceGraphique() {
 		//Initiating database-------------------------------------------------
-		database = new StudentsDatabase("students");
+		database = new StudentsDatabase("students_database");
 		//--------------------------------------------------------------------
-		this.setTitle(" Gestion des Étudiants (beta)");
+		this.setTitle("Gestion des Étudiants");
 		appLogo = new ImageIcon("resources/logo-USMBA.png");
 		this.setIconImage(appLogo.getImage());
 		this.setSize(1100,700);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.getAccueil();
 		
 	}
 	public void supprimerEtudiant(String cne) {
@@ -155,10 +153,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	@Override
 	public void getAccueil() {
 		
-//		Color Light = new Color(0xEEEEEE);
-//		Color semiLight = new Color(0x76ABAE);
-//		Color dark = new Color(0x222831);
-//		Color semidark = new Color(0x31363F);
+
 		
 		Color sideMenuColor = dark;
 		JPanel homePanel = new JPanel(new BorderLayout());
@@ -284,7 +279,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 				}else if(choixEmail.isSelected()) {
 					choose="E-mail";		
 				}else {
-					JOptionPane.showMessageDialog(null, "Selectione un choix");
+					JOptionPane.showMessageDialog(null, "Choisissez une option");
 					return;
 				}
 				
@@ -309,7 +304,7 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 				 revalidate();
 				 repaint();
 				}else {
-					JOptionPane.showMessageDialog(null, "Remplaiez la bar de recherch ");
+					JOptionPane.showMessageDialog(null, "Remplissez la barre de recherche. ");
 				}
 					 
 		}
@@ -621,26 +616,6 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	    gbc.anchor = GridBagConstraints.WEST;
 	    dateNaissanceField = new JTextField("jj/mm/aaaa",20);
 
-	    dateNaissanceField.addFocusListener(new FocusListener() {
-			@Override
-			public void focusLost(FocusEvent e) {
-				 if (dateNaissanceField.getText().equals("jj/mm/aaaa")) {
-	                    dateNaissanceField.setText("");
-	                    dateNaissanceField.setForeground(Color.BLACK); 
-	                }
-				
-			}
-			
-			@Override
-			public void focusGained(FocusEvent e) {
-				 if (dateNaissanceField.getText().isEmpty()) {
-	                    dateNaissanceField.setText("jj/mm/aaaa");
-	                    dateNaissanceField.setForeground(Color.GRAY); 
-	                }
-				
-			}
-	    });
-
 	    dateNaissanceField.setForeground(placeHolder);
 	    dateNaissanceField.addMouseListener(new MouseAdapter() {
 	    	@Override
@@ -702,15 +677,21 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	        			emailField.getText()
 	        			);
 	        	if(!database.isStudentExist(addedStudent.getCne())) {
-	        	int response =JOptionPane.showConfirmDialog(null, "are you sure you want to add "+nomField.getText()+" to list");
+	        	int response =JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir ajouter "+nomField.getText()+" à la liste ");
 	        	if(response == JOptionPane.YES_OPTION) {
 	        		
 	            database.ajouterEtudiant(addedStudent);
+	            codeMassarField.setText("");
+    			prenomField.setText("");
+    			nomField.setText("");
+    			dateNaissanceField.setText("jj/mm/aaaa");
+    			emailField.setText("");
 	           
-	            JOptionPane.showMessageDialog(null,"L'etudent a est ete ajoute a la list");
+	            JOptionPane.showMessageDialog(null,"L'étudiant a été ajouté à la liste.");
+	            
 	        	
 	        	}else {
-	        		dialog= new JOptionPane("L'operation a ete annule",JOptionPane.INFORMATION_MESSAGE,JOptionPane.DEFAULT_OPTION).createDialog(null,"Auto-Close Dialog");
+	        		dialog= new JOptionPane("L'opération a été annulée.",JOptionPane.INFORMATION_MESSAGE,JOptionPane.DEFAULT_OPTION).createDialog(null,"Auto-Close Dialog");
 	        		
 	        		Timer timer = new Timer(1000,new ActionListener() {
 						
@@ -727,15 +708,15 @@ public class InterfaceGraphique extends JFrame implements userGraphic{
 	        		
 	        	}
 	        	}else {
-	        		JOptionPane.showMessageDialog(null, "L'etudent est deja exist dans database");
+	        		JOptionPane.showMessageDialog(null, "L'étudiant existe déjà dans la base de données.");
 	        	}
 	        	
 	        	 }else if( !d.validDate()) {
 	    
-	        		 JOptionPane.showMessageDialog(null, "Le date est incorrect \n \n essay d'utilise la forma suivant jj/nn/aaaa.");	        
+	        		 JOptionPane.showMessageDialog(null, "La date est incorrecte. \\n \\n Essayez d'utiliser le format suivant : jj/mm/aaaa.");	        
 	        	 }else{
 	        		 
-	        		 JOptionPane.showMessageDialog(null, "SVP remplie tout les informations");
+	        		 JOptionPane.showMessageDialog(null, "Veuillez remplir toutes les informations, s'il vous plaît.");
 	        	 }
 	        }
 	    });

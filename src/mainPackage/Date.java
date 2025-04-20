@@ -1,7 +1,5 @@
 package mainPackage;
 
-import javax.swing.JOptionPane;
-
 public class Date {
 	// Les attributes
 	private int jour;
